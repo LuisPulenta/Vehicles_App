@@ -38,6 +38,7 @@ dependencies:
   email_validator: ^2.0.1     # Para validar Email
   http: ^0.13.3               # Para consumir APIs 
   intl: ^0.17.0               # Para ver formato moneda
+  adaptive_dialog: ^1.1.0     # Para cuadros de diálogo
 
 
 dev_dependencies:
