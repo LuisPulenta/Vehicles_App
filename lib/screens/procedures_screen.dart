@@ -20,7 +20,11 @@ class ProceduresScreen extends StatefulWidget {
 
 class _ProceduresScreenState extends State<ProceduresScreen> {
   List<Procedure> _procedures = [];
+  List<Procedure> _procedures2 = [];
   bool _showLoader = false;
+
+  bool _isFiltered = false;
+  String _search = '';
 
   @override
   void initState() {
@@ -34,6 +38,12 @@ class _ProceduresScreenState extends State<ProceduresScreen> {
       backgroundColor: Color(0xFFE4D359),
       appBar: AppBar(
         title: Text('Procedimientos'),
+        actions: <Widget>[
+          _isFiltered
+              ? IconButton(
+                  onPressed: _removeFilter, icon: Icon(Icons.filter_none))
+              : IconButton(onPressed: _showFilter, icon: Icon(Icons.filter_alt))
+        ],
       ),
       body: Center(
         child: _showLoader
@@ -42,19 +52,12 @@ class _ProceduresScreenState extends State<ProceduresScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ProcedureScreen(
-                      token: widget.token,
-                      procedure: Procedure(description: '', id: 0, price: 0))));
-        },
+        onPressed: () => _goAdd(),
       ),
     );
   }
 
-  void _getProcedures() async {
+  Future<Null> _getProcedures() async {
     setState(() {
       _showLoader = true;
     });
@@ -78,6 +81,7 @@ class _ProceduresScreenState extends State<ProceduresScreen> {
 
     setState(() {
       _procedures = response.result;
+      _procedures2 = _procedures;
     });
   }
 
@@ -90,7 +94,9 @@ class _ProceduresScreenState extends State<ProceduresScreen> {
       child: Container(
         margin: EdgeInsets.all(20),
         child: Text(
-          'No hay procedimientos almacenados.',
+          _isFiltered
+              ? 'No hay procedimientos con ese criterio de búsqueda'
+              : 'No hay procedimientos registrados',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ),
@@ -98,49 +104,132 @@ class _ProceduresScreenState extends State<ProceduresScreen> {
   }
 
   Widget _getListView() {
-    return ListView(
-      children: _procedures.map((e) {
-        return Card(
-          child: InkWell(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          ProcedureScreen(token: widget.token, procedure: e)));
-            },
-            child: Container(
-              margin: EdgeInsets.all(2),
-              padding: EdgeInsets.all(2),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        e.description,
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      Icon(Icons.arrow_forward_ios),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        '${NumberFormat.currency(symbol: '\$').format(e.price)}',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ],
+    return RefreshIndicator(
+      onRefresh: _getProcedures,
+      child: ListView(
+        children: _procedures2.map((e) {
+          return Card(
+            child: InkWell(
+              onTap: () => _goEdit(e),
+              child: Container(
+                margin: EdgeInsets.all(2),
+                padding: EdgeInsets.all(2),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          e.description,
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        Icon(Icons.arrow_forward_ios),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          '${NumberFormat.currency(symbol: '\$').format(e.price)}',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      }).toList(),
+          );
+        }).toList(),
+      ),
     );
+  }
+
+  void _showFilter() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            title: Text('Filtrar Procedimientos'),
+            content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+              Text('Escriba las primeras letras del Procedimiento'),
+              SizedBox(
+                height: 10,
+              ),
+              TextField(
+                autofocus: true,
+                decoration: InputDecoration(
+                    hintText: 'Criterio de búsqueda...',
+                    labelText: 'Buscar',
+                    suffixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10))),
+                onChanged: (value) {
+                  _search = value;
+                },
+              ),
+            ]),
+            actions: <Widget>[
+              TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('Cancelar')),
+              TextButton(onPressed: () => _filter(), child: Text('Filtrar')),
+            ],
+          );
+        });
+  }
+
+  void _removeFilter() {
+    setState(() {
+      _isFiltered = false;
+    });
+    _procedures2 = _procedures;
+  }
+
+  _filter() {
+    if (_search.isEmpty) {
+      return;
+    }
+    List<Procedure> filteredList = [];
+    for (var procedure in _procedures) {
+      if (procedure.description.toLowerCase().contains(_search.toLowerCase())) {
+        filteredList.add(procedure);
+      }
+    }
+
+    setState(() {
+      _procedures2 = filteredList;
+      _isFiltered = true;
+    });
+
+    Navigator.of(context).pop();
+  }
+
+  void _goAdd() async {
+    String? result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ProcedureScreen(
+                token: widget.token,
+                procedure: Procedure(description: '', id: 0, price: 0))));
+    if (result == 'yes') {
+      _getProcedures();
+    }
+  }
+
+  void _goEdit(Procedure procedure) async {
+    String? result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                ProcedureScreen(token: widget.token, procedure: procedure)));
+    if (result == 'yes') {
+      _getProcedures();
+    }
   }
 }
