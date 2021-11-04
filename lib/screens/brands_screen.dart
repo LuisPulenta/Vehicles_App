@@ -86,7 +86,7 @@ class _brandsScreenState extends State<BrandsScreen> {
   }
 
   Widget _getContent() {
-    return _brands.length == 0 ? _noContent() : _getListView();
+    return _brands2.length == 0 ? _noContent() : _getListView();
   }
 
   Widget _noContent() {

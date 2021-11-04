@@ -86,7 +86,7 @@ class _ProceduresScreenState extends State<ProceduresScreen> {
   }
 
   Widget _getContent() {
-    return _procedures.length == 0 ? _noContent() : _getListView();
+    return _procedures2.length == 0 ? _noContent() : _getListView();
   }
 
   Widget _noContent() {

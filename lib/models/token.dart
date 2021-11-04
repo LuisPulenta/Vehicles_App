@@ -14,6 +14,8 @@ class Token {
       imageFullPath: '',
       userType: 0,
       fullName: '',
+      vehicles: [],
+      vehiclesCount: 0,
       id: '',
       userName: '',
       email: '',

@@ -1,35 +1,36 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+
 import 'package:vehicles_app/components/loader_component.dart';
 import 'package:vehicles_app/helpers/api_helper.dart';
-
-import 'package:vehicles_app/models/vehicle_type.dart';
+import 'package:vehicles_app/helpers/constants.dart';
+import 'package:vehicles_app/models/document_type.dart';
+import 'package:vehicles_app/models/user.dart';
 import 'package:vehicles_app/models/response.dart';
 import 'package:vehicles_app/models/token.dart';
-import 'package:vehicles_app/screens/vehicle_Type_screen.dart';
+import 'package:vehicles_app/screens/user_screen.dart';
 
-class VehicleTypesScreen extends StatefulWidget {
+class UsersScreen extends StatefulWidget {
   final Token token;
 
-  VehicleTypesScreen({required this.token});
+  UsersScreen({required this.token});
 
   @override
-  _vehicleTypesScreenState createState() => _vehicleTypesScreenState();
+  _UsersScreenState createState() => _UsersScreenState();
 }
 
-class _vehicleTypesScreenState extends State<VehicleTypesScreen> {
-  List<VehicleType> _vehicleTypes = [];
-  List<VehicleType> _vehicleTypes2 = [];
+class _UsersScreenState extends State<UsersScreen> {
+  List<User> _users = [];
   bool _showLoader = false;
-
   bool _isFiltered = false;
   String _search = '';
 
   @override
   void initState() {
     super.initState();
-    _getvehicleTypes();
+    _getUsers();
   }
 
   @override
@@ -37,7 +38,7 @@ class _vehicleTypesScreenState extends State<VehicleTypesScreen> {
     return Scaffold(
       backgroundColor: Color(0xFFE4D359),
       appBar: AppBar(
-        title: Text('Tipos de Vehículo'),
+        title: Text('Usuarios'),
         actions: <Widget>[
           _isFiltered
               ? IconButton(
@@ -57,12 +58,12 @@ class _vehicleTypesScreenState extends State<VehicleTypesScreen> {
     );
   }
 
-  Future<Null> _getvehicleTypes() async {
+  Future<Null> _getUsers() async {
     setState(() {
       _showLoader = true;
     });
 
-    Response response = await ApiHelper.getVehicleTypes(widget.token.token);
+    Response response = await ApiHelper.getUsers(widget.token.token);
 
     setState(() {
       _showLoader = false;
@@ -80,23 +81,22 @@ class _vehicleTypesScreenState extends State<VehicleTypesScreen> {
     }
 
     setState(() {
-      _vehicleTypes = response.result;
-      _vehicleTypes2 = _vehicleTypes;
+      _users = response.result;
     });
   }
 
   Widget _getContent() {
-    return _vehicleTypes2.length == 0 ? _noContent() : _getListView();
+    return _users.length == 0 ? _noContent() : _getListView();
   }
 
   Widget _noContent() {
-    return Center(
-      child: Container(
-        margin: EdgeInsets.all(20),
+    return Container(
+      margin: EdgeInsets.all(20),
+      child: Center(
         child: Text(
           _isFiltered
-              ? 'No hay tipos de vehículo con ese criterio de búsqueda'
-              : 'No hay tipos de vehículo registrados',
+              ? 'No hay usuarios con ese criterio de búsqueda'
+              : 'No hay usuarios registrados',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ),
@@ -105,30 +105,55 @@ class _vehicleTypesScreenState extends State<VehicleTypesScreen> {
 
   Widget _getListView() {
     return RefreshIndicator(
-      onRefresh: _getvehicleTypes,
+      onRefresh: _getUsers,
       child: ListView(
-        children: _vehicleTypes2.map((e) {
+        children: _users.map((e) {
           return Card(
             child: InkWell(
               onTap: () => _goEdit(e),
               child: Container(
-                margin: EdgeInsets.all(2),
-                padding: EdgeInsets.all(2),
-                child: Column(
+                margin: EdgeInsets.all(10),
+                padding: EdgeInsets.all(5),
+                child: Row(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          e.description,
-                          style: TextStyle(fontSize: 16),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(40),
+                      child: FadeInImage(
+                        placeholder: AssetImage('assets/logo.png'),
+                        image: NetworkImage(e.imageFullPath),
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Column(
+                              children: [
+                                Text(e.fullName,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    )),
+                                Text(e.email,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                    )),
+                                Text(e.phoneNumber,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                    )),
+                              ],
+                            ),
+                          ],
                         ),
-                        Icon(Icons.arrow_forward_ios),
-                      ],
+                      ),
                     ),
-                    SizedBox(
-                      height: 5,
-                    ),
+                    Icon(Icons.arrow_forward_ios),
                   ],
                 ),
               ),
@@ -147,9 +172,10 @@ class _vehicleTypesScreenState extends State<VehicleTypesScreen> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-            title: Text('Filtrar Tipos de Vehículo'),
+            title: Text('Filtrar Usuarios'),
             content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              Text('Escriba las primeras letras del Tipo de Vehículo'),
+              Text(
+                  'Escriba las primeras letras del Nombre o Apellido del Usuario'),
               SizedBox(
                 height: 10,
               ),
@@ -180,24 +206,22 @@ class _vehicleTypesScreenState extends State<VehicleTypesScreen> {
     setState(() {
       _isFiltered = false;
     });
-    _vehicleTypes2 = _vehicleTypes;
+    _getUsers();
   }
 
   _filter() {
     if (_search.isEmpty) {
       return;
     }
-    List<VehicleType> filteredList = [];
-    for (var vehicleType in _vehicleTypes) {
-      if (vehicleType.description
-          .toLowerCase()
-          .contains(_search.toLowerCase())) {
-        filteredList.add(vehicleType);
+    List<User> filteredList = [];
+    for (var user in _users) {
+      if (user.fullName.toLowerCase().contains(_search.toLowerCase())) {
+        filteredList.add(user);
       }
     }
 
     setState(() {
-      _vehicleTypes2 = filteredList;
+      _users = filteredList;
       _isFiltered = true;
     });
 
@@ -208,22 +232,37 @@ class _vehicleTypesScreenState extends State<VehicleTypesScreen> {
     String? result = await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => VehicleTypeScreen(
+            builder: (context) => UserScreen(
                 token: widget.token,
-                vehicleType: VehicleType(description: '', id: 0))));
+                user: User(
+                  firstName: '',
+                  lastName: '',
+                  documentType: DocumentType(id: 0, description: ''),
+                  document: '',
+                  address: '',
+                  imageId: '',
+                  imageFullPath: '',
+                  userType: 1,
+                  fullName: '',
+                  vehicles: [],
+                  vehiclesCount: 0,
+                  id: '',
+                  userName: '',
+                  email: '',
+                  phoneNumber: '',
+                ))));
     if (result == 'yes') {
-      _getvehicleTypes();
+      _getUsers();
     }
   }
 
-  void _goEdit(VehicleType vehicleType) async {
+  void _goEdit(User user) async {
     String? result = await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => VehicleTypeScreen(
-                token: widget.token, vehicleType: vehicleType)));
+            builder: (context) => UserScreen(token: widget.token, user: user)));
     if (result == 'yes') {
-      _getvehicleTypes();
+      _getUsers();
     }
   }
 }

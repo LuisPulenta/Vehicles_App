@@ -86,7 +86,7 @@ class _documentTypesScreenState extends State<DocumentTypesScreen> {
   }
 
   Widget _getContent() {
-    return _documentTypes.length == 0 ? _noContent() : _getListView();
+    return _documentTypes2.length == 0 ? _noContent() : _getListView();
   }
 
   Widget _noContent() {
