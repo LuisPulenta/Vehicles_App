@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:camera/camera.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:vehicles_app/components/loader_component.dart';
@@ -8,6 +11,7 @@ import 'package:vehicles_app/models/document_type.dart';
 import 'package:vehicles_app/models/user.dart';
 import 'package:vehicles_app/models/response.dart';
 import 'package:vehicles_app/models/token.dart';
+import 'package:vehicles_app/screens/take_picture.dart';
 
 class UserScreen extends StatefulWidget {
   final Token token;
@@ -21,6 +25,8 @@ class UserScreen extends StatefulWidget {
 
 class _UserScreenState extends State<UserScreen> {
   bool _showLoader = false;
+  bool _photoChanged = false;
+  late XFile _image;
 
   String _firstName = '';
   String _firstNameError = '';
@@ -32,7 +38,9 @@ class _UserScreenState extends State<UserScreen> {
   bool _lastNameShowError = false;
   TextEditingController _lastNameController = TextEditingController();
 
-  DocumentType _documentType = DocumentType(id: 0, description: '');
+  int _documentTypeId = 0;
+  String _documentTypeIdError = '';
+  bool _documentTypeIdShowError = false;
   List<DocumentType> _documentTypes = [];
 
   String _document = '';
@@ -69,7 +77,7 @@ class _UserScreenState extends State<UserScreen> {
     _document = widget.user.document;
     _documentController.text = _document;
 
-    _documentType = widget.user.documentType;
+    _documentTypeId = widget.user.documentType.id;
 
     _address = widget.user.address;
     _addressController.text = _address;
@@ -94,6 +102,9 @@ class _UserScreenState extends State<UserScreen> {
             SingleChildScrollView(
               child: Column(
                 children: <Widget>[
+                  SizedBox(
+                    height: 20,
+                  ),
                   _showPhoto(),
                   _showFirstName(),
                   _showLastName(),
@@ -115,6 +126,52 @@ class _UserScreenState extends State<UserScreen> {
         ));
   }
 
+  Widget _showPhoto() {
+    return InkWell(
+      onTap: () => _takePicture(),
+      child: Stack(children: <Widget>[
+        Container(
+          margin: EdgeInsets.only(top: 10),
+          child: widget.user.id.isEmpty && !_photoChanged
+              ? Image(
+                  image: AssetImage('assets/nouser.png'),
+                  width: 160,
+                  height: 160,
+                  fit: BoxFit.cover)
+              : ClipRRect(
+                  borderRadius: BorderRadius.circular(80),
+                  child: _photoChanged
+                      ? Image.file(File(_image.path),
+                          width: 160, height: 160, fit: BoxFit.cover)
+                      : FadeInImage(
+                          placeholder: AssetImage('assets/logo.png'),
+                          image: NetworkImage(widget.user.imageFullPath),
+                          width: 160,
+                          height: 160,
+                          fit: BoxFit.cover,
+                        ),
+                ),
+        ),
+        Positioned(
+            bottom: 0,
+            left: 100,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(30),
+              child: Container(
+                color: Colors.green[50],
+                height: 60,
+                width: 60,
+                child: Icon(
+                  Icons.photo_camera,
+                  size: 40,
+                  color: Colors.black,
+                ),
+              ),
+            )),
+      ]),
+    );
+  }
+
   Widget _showFirstName() {
     return Container(
       padding: EdgeInsets.all(10),
@@ -133,249 +190,6 @@ class _UserScreenState extends State<UserScreen> {
           _firstName = value;
         },
       ),
-    );
-  }
-
-  Widget _showButtons() {
-    return Container(
-      margin: EdgeInsets.only(left: 10, right: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          Expanded(
-            child: ElevatedButton(
-              child: Text('Guardar'),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
-                  return Color(0xFF120E43);
-                }),
-              ),
-              onPressed: () => _save(),
-            ),
-          ),
-          widget.user.id.isEmpty
-              ? Container()
-              : SizedBox(
-                  width: 20,
-                ),
-          widget.user.id.isEmpty
-              ? Container()
-              : Expanded(
-                  child: ElevatedButton(
-                    child: Text('Borrar'),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                        return Color(0xFFB4161B);
-                      }),
-                    ),
-                    onPressed: () => _confirmDelete(),
-                  ),
-                ),
-        ],
-      ),
-    );
-  }
-
-  void _save() {
-    if (!validateFields()) {
-      return;
-    }
-    widget.user.id.isEmpty ? _addRecord() : _saveRecord();
-  }
-
-  bool validateFields() {
-    bool isValid = true;
-
-    if (_firstName.isEmpty) {
-      isValid = false;
-      _firstNameShowError = true;
-      _firstNameError = 'Debes ingresar un nombre';
-    } else {
-      _firstNameShowError = false;
-    }
-
-    if (_lastName.isEmpty) {
-      isValid = false;
-      _lastNameShowError = true;
-      _lastNameError = 'Debes ingresar un apellido';
-    } else {
-      _lastNameShowError = false;
-    }
-
-    if (_document.isEmpty) {
-      isValid = false;
-      _documentShowError = true;
-      _documentError = 'Debes ingresar un documento';
-    } else {
-      _documentShowError = false;
-    }
-
-    if (_address.isEmpty) {
-      isValid = false;
-      _addressShowError = true;
-      _addressError = 'Debes ingresar una dirección';
-    } else {
-      _addressShowError = false;
-    }
-
-    if (_email.isEmpty) {
-      isValid = false;
-      _emailShowError = true;
-      _emailError = 'Debes ingresar tu Email';
-    } else if (!EmailValidator.validate(_email)) {
-      isValid = false;
-      _emailShowError = true;
-      _emailError = 'Debes ingresar un Email válido';
-    } else {
-      _emailShowError = false;
-    }
-
-    if (_phoneNumber.isEmpty) {
-      isValid = false;
-      _phoneNumberShowError = true;
-      _phoneNumberError = 'Debes ingresar un teléfono';
-    } else {
-      _phoneNumberShowError = false;
-    }
-
-    setState(() {});
-
-    return isValid;
-  }
-
-  _addRecord() async {
-    setState(() {
-      _showLoader = true;
-    });
-
-    Map<String, dynamic> request = {
-      'firstName': _firstName,
-      'lastName': _lastName,
-      'typeDocument': 1,
-      'document': _document,
-      'address': _address,
-      'email': _email,
-      'userName': _email,
-      'phoneNumber': _phoneNumber,
-    };
-
-    Response response =
-        await ApiHelper.post('/api/Users/', request, widget.token.token);
-
-    setState(() {
-      _showLoader = false;
-    });
-
-    if (!response.isSuccess) {
-      await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
-      return;
-    }
-    Navigator.pop(context, 'yes');
-  }
-
-  _saveRecord() async {
-    setState(() {
-      _showLoader = true;
-    });
-
-    Map<String, dynamic> request = {
-      'id': widget.user.id,
-      'firstName': _firstName,
-      'lastName': _lastName,
-      'typeDocument': 1,
-      'document': _document,
-      'address': _address,
-      'email': _email,
-      'userName': _email,
-      'phoneNumber': _phoneNumber,
-    };
-
-    Response response = await ApiHelper.put(
-        '/api/Users/', widget.user.id, request, widget.token.token);
-
-    setState(() {
-      _showLoader = false;
-    });
-
-    if (!response.isSuccess) {
-      await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
-      return;
-    }
-    Navigator.pop(context, 'yes');
-  }
-
-  void _confirmDelete() async {
-    var response = await showAlertDialog(
-        context: context,
-        title: 'Confirmación',
-        message: '¿Estás seguro de querer borrar el registro?',
-        actions: <AlertDialogAction>[
-          AlertDialogAction(key: 'no', label: 'No'),
-          AlertDialogAction(key: 'yes', label: 'Sí'),
-        ]);
-    if (response == 'yes') {
-      _deleteRecord();
-    }
-  }
-
-  void _deleteRecord() async {
-    setState(() {
-      _showLoader = true;
-    });
-
-    Response response = await ApiHelper.delete(
-        '/api/Users/', widget.user.id, widget.token.token);
-
-    setState(() {
-      _showLoader = false;
-    });
-
-    if (!response.isSuccess) {
-      await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
-      return;
-    }
-    Navigator.pop(context, 'yes');
-  }
-
-  Widget _showPhoto() {
-    return Container(
-      margin: EdgeInsets.only(top: 10),
-      child: widget.user.id.isEmpty
-          ? Image(
-              image: AssetImage('assets/nouser.png'),
-              width: 160,
-              height: 160,
-            )
-          : ClipRRect(
-              borderRadius: BorderRadius.circular(80),
-              child: FadeInImage(
-                placeholder: AssetImage('assets/logo.png'),
-                image: NetworkImage(widget.user.imageFullPath),
-                width: 160,
-                height: 160,
-                fit: BoxFit.cover,
-              ),
-            ),
     );
   }
 
@@ -401,7 +215,46 @@ class _UserScreenState extends State<UserScreen> {
   }
 
   Widget _showDocumentType() {
-    return Container();
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: _documentTypes.length == 0
+          ? Text('Cargando tipos de documento...')
+          : DropdownButtonFormField(
+              items: _getComboDocumentTypes(),
+              value: _documentTypeId,
+              onChanged: (option) {
+                setState(() {
+                  _documentTypeId = option as int;
+                });
+              },
+              decoration: InputDecoration(
+                fillColor: Colors.white,
+                filled: true,
+                hintText: 'Seleccione un tipo de documento...',
+                labelText: 'Tipo de Documento',
+                errorText:
+                    _documentTypeIdShowError ? _documentTypeIdError : null,
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              )),
+    );
+  }
+
+  List<DropdownMenuItem<int>> _getComboDocumentTypes() {
+    List<DropdownMenuItem<int>> list = [];
+    list.add(DropdownMenuItem(
+      child: Text('Seleccione un Tipo de Documento...'),
+      value: 0,
+    ));
+
+    _documentTypes.forEach((documentType) {
+      list.add(DropdownMenuItem(
+        child: Text(documentType.description),
+        value: documentType.id,
+      ));
+    });
+
+    return list;
   }
 
   Widget _showDocument() {
@@ -492,6 +345,235 @@ class _UserScreenState extends State<UserScreen> {
     );
   }
 
+  Widget _showButtons() {
+    return Container(
+      margin: EdgeInsets.only(left: 10, right: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          Expanded(
+            child: ElevatedButton(
+              child: Text('Guardar'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                  return Color(0xFF120E43);
+                }),
+              ),
+              onPressed: () => _save(),
+            ),
+          ),
+          widget.user.id.isEmpty
+              ? Container()
+              : SizedBox(
+                  width: 20,
+                ),
+          widget.user.id.isEmpty
+              ? Container()
+              : Expanded(
+                  child: ElevatedButton(
+                    child: Text('Borrar'),
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                        return Color(0xFFB4161B);
+                      }),
+                    ),
+                    onPressed: () => _confirmDelete(),
+                  ),
+                ),
+        ],
+      ),
+    );
+  }
+
+  void _save() {
+    if (!validateFields()) {
+      return;
+    }
+    widget.user.id.isEmpty ? _addRecord() : _saveRecord();
+  }
+
+  bool validateFields() {
+    bool isValid = true;
+
+    if (_firstName.isEmpty) {
+      isValid = false;
+      _firstNameShowError = true;
+      _firstNameError = 'Debes ingresar un nombre';
+    } else {
+      _firstNameShowError = false;
+    }
+
+    if (_lastName.isEmpty) {
+      isValid = false;
+      _lastNameShowError = true;
+      _lastNameError = 'Debes ingresar un apellido';
+    } else {
+      _lastNameShowError = false;
+    }
+
+    if (_documentTypeId == 0) {
+      isValid = false;
+      _documentTypeIdShowError = true;
+      _documentTypeIdError = 'Debes seleccionar un Tipo de Documento';
+    } else {
+      _documentTypeIdShowError = false;
+    }
+
+    if (_document.isEmpty) {
+      isValid = false;
+      _documentShowError = true;
+      _documentError = 'Debes ingresar un documento';
+    } else {
+      _documentShowError = false;
+    }
+
+    if (_address.isEmpty) {
+      isValid = false;
+      _addressShowError = true;
+      _addressError = 'Debes ingresar una dirección';
+    } else {
+      _addressShowError = false;
+    }
+
+    if (_email.isEmpty) {
+      isValid = false;
+      _emailShowError = true;
+      _emailError = 'Debes ingresar tu Email';
+    } else if (!EmailValidator.validate(_email)) {
+      isValid = false;
+      _emailShowError = true;
+      _emailError = 'Debes ingresar un Email válido';
+    } else {
+      _emailShowError = false;
+    }
+
+    if (_phoneNumber.isEmpty) {
+      isValid = false;
+      _phoneNumberShowError = true;
+      _phoneNumberError = 'Debes ingresar un teléfono';
+    } else {
+      _phoneNumberShowError = false;
+    }
+
+    setState(() {});
+
+    return isValid;
+  }
+
+  _addRecord() async {
+    setState(() {
+      _showLoader = true;
+    });
+
+    Map<String, dynamic> request = {
+      'firstName': _firstName,
+      'lastName': _lastName,
+      'typeDocument': _documentTypeId,
+      'document': _document,
+      'address': _address,
+      'email': _email,
+      'userName': _email,
+      'phoneNumber': _phoneNumber,
+    };
+
+    Response response =
+        await ApiHelper.post('/api/Users/', request, widget.token.token);
+
+    setState(() {
+      _showLoader = false;
+    });
+
+    if (!response.isSuccess) {
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: response.message,
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
+    Navigator.pop(context, 'yes');
+  }
+
+  _saveRecord() async {
+    setState(() {
+      _showLoader = true;
+    });
+
+    Map<String, dynamic> request = {
+      'id': widget.user.id,
+      'firstName': _firstName,
+      'lastName': _lastName,
+      'typeDocument': _documentTypeId,
+      'document': _document,
+      'address': _address,
+      'email': _email,
+      'userName': _email,
+      'phoneNumber': _phoneNumber,
+    };
+
+    Response response = await ApiHelper.put(
+        '/api/Users/', widget.user.id, request, widget.token.token);
+
+    setState(() {
+      _showLoader = false;
+    });
+
+    if (!response.isSuccess) {
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: response.message,
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
+    Navigator.pop(context, 'yes');
+  }
+
+  void _confirmDelete() async {
+    var response = await showAlertDialog(
+        context: context,
+        title: 'Confirmación',
+        message: '¿Estás seguro de querer borrar el registro?',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: 'no', label: 'No'),
+          AlertDialogAction(key: 'yes', label: 'Sí'),
+        ]);
+    if (response == 'yes') {
+      _deleteRecord();
+    }
+  }
+
+  void _deleteRecord() async {
+    setState(() {
+      _showLoader = true;
+    });
+
+    Response response = await ApiHelper.delete(
+        '/api/Users/', widget.user.id, widget.token.token);
+
+    setState(() {
+      _showLoader = false;
+    });
+
+    if (!response.isSuccess) {
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: response.message,
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
+    Navigator.pop(context, 'yes');
+  }
+
   Future<Null> _getDocumentTypes() async {
     setState(() {
       _showLoader = true;
@@ -517,5 +599,41 @@ class _UserScreenState extends State<UserScreen> {
     setState(() {
       _documentTypes = response.result;
     });
+  }
+
+  void _takePicture() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    final cameras = await availableCameras();
+    var firstCamera = cameras.first;
+    var response1 = await showAlertDialog(
+        context: context,
+        title: 'Seleccionar cámara',
+        message: '¿Qué cámara desea utilizar?',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: 'no', label: 'Trasera'),
+          AlertDialogAction(key: 'yes', label: 'Delantera'),
+          AlertDialogAction(key: 'cancel', label: 'Cancelar'),
+        ]);
+    if (response1 == 'yes') {
+      firstCamera = cameras.first;
+    }
+    if (response1 == 'no') {
+      firstCamera = cameras.last;
+    }
+
+    if (response1 != 'cancel') {
+      Response? response = await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => TakePictureScreen(
+                    camera: firstCamera,
+                  )));
+      if (response != null) {
+        setState(() {
+          _photoChanged = true;
+          _image = response.result;
+        });
+      }
+    }
   }
 }

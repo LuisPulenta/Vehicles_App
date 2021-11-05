@@ -39,6 +39,9 @@ dependencies:
   http: ^0.13.3               # Para consumir APIs 
   intl: ^0.17.0               # Para ver formato moneda
   adaptive_dialog: ^1.1.0     # Para cuadros de diálogo
+  camera: ^0.9.4              # Para acceder a la cámara
+  path_provider: ^2.0.5       # Para acceder a la cámara
+  path: ^1.8.0                # Para acceder a la cámara
 
 
 dev_dependencies:

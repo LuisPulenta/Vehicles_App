@@ -40,18 +40,23 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Stack(
         children: <Widget>[
           Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                _showLogo(),
-                SizedBox(
-                  height: 40,
-                ),
-                _showEmail(),
-                _showPassword(),
-                _showRememberme(),
-                _showButtons(),
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    height: 10,
+                  ),
+                  _showLogo(),
+                  SizedBox(
+                    height: 40,
+                  ),
+                  _showEmail(),
+                  _showPassword(),
+                  _showRememberme(),
+                  _showButtons(),
+                ],
+              ),
             ),
           ),
           _showLoader
