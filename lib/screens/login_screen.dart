@@ -4,6 +4,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vehicles_app/helpers/constants.dart';
 import 'package:vehicles_app/models/token.dart';
 import 'package:vehicles_app/components/loader_component.dart';
@@ -74,6 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Image(
       image: AssetImage('assets/logo.png'),
       width: 300,
+      fit: BoxFit.fill,
     );
   }
 
@@ -213,13 +215,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (response.statusCode >= 400) {
       setState(() {
+        _emailShowError = true;
+        _emailError = 'Email o Contraseña no válidos';
         _passwordShowError = true;
-        _passwordError = 'Email o contraseña incorrectos';
+        _passwordError = 'Email o Contraseña no válidos';
       });
       return;
     }
 
     var body = response.body;
+    if (_rememberme) {
+      _storeUser(body);
+    }
+
     var decodedJson = jsonDecode(body);
     var token = Token.fromJson(decodedJson);
 
@@ -295,5 +303,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _register() {
     return Container();
+  }
+
+  void _storeUser(String body) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isRemembered', true);
+    await prefs.setString('userBody', body);
   }
 }

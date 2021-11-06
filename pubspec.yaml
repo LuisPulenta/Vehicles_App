@@ -43,6 +43,8 @@ dependencies:
   path_provider: ^2.0.5       # Para acceder a la cámara
   path: ^1.8.0                # Para acceder a la cámara
   connectivity: ^3.0.6        # Para chequear conexión a Internet
+  image_picker: ^0.8.4+2      # Para acceder a la galería de imágenes
+  shared_preferences: ^2.0.8  # Para el rememberme
 
 dev_dependencies:
   flutter_test:
