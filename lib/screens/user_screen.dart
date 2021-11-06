@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:camera/camera.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:vehicles_app/components/loader_component.dart';
@@ -305,6 +307,7 @@ class _UserScreenState extends State<UserScreen> {
     return Container(
       padding: EdgeInsets.all(10),
       child: TextField(
+        enabled: widget.user.id.isEmpty,
         controller: _emailController,
         keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(
@@ -467,15 +470,22 @@ class _UserScreenState extends State<UserScreen> {
       _showLoader = true;
     });
 
+    String base64image = '';
+    if (_photoChanged) {
+      List<int> imageBytes = await _image.readAsBytes();
+      base64image = base64Encode(imageBytes);
+    }
+
     Map<String, dynamic> request = {
       'firstName': _firstName,
       'lastName': _lastName,
-      'typeDocument': _documentTypeId,
+      'documentTypeId': _documentTypeId,
       'document': _document,
       'address': _address,
       'email': _email,
       'userName': _email,
       'phoneNumber': _phoneNumber,
+      'image': base64image,
     };
 
     Response response =
@@ -503,17 +513,40 @@ class _UserScreenState extends State<UserScreen> {
       _showLoader = true;
     });
 
+    String base64image = '';
+    if (_photoChanged) {
+      List<int> imageBytes = await _image.readAsBytes();
+      base64image = base64Encode(imageBytes);
+    }
+
     Map<String, dynamic> request = {
       'id': widget.user.id,
       'firstName': _firstName,
       'lastName': _lastName,
-      'typeDocument': _documentTypeId,
+      'documentTypeId': _documentTypeId,
       'document': _document,
       'address': _address,
       'email': _email,
       'userName': _email,
       'phoneNumber': _phoneNumber,
+      'image': base64image,
     };
+
+    var connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.none) {
+      setState(() {
+        _showLoader = false;
+      });
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: 'Verifica que estés conectado a Internet',
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
 
     Response response = await ApiHelper.put(
         '/api/Users/', widget.user.id, request, widget.token.token);
@@ -554,6 +587,22 @@ class _UserScreenState extends State<UserScreen> {
       _showLoader = true;
     });
 
+    var connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.none) {
+      setState(() {
+        _showLoader = false;
+      });
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: 'Verifica que estés conectado a Internet',
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
+
     Response response = await ApiHelper.delete(
         '/api/Users/', widget.user.id, widget.token.token);
 
@@ -578,6 +627,22 @@ class _UserScreenState extends State<UserScreen> {
     setState(() {
       _showLoader = true;
     });
+
+    var connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.none) {
+      setState(() {
+        _showLoader = false;
+      });
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: 'Verifica que estés conectado a Internet',
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
 
     Response response = await ApiHelper.getDocumentTypes(widget.token.token);
 

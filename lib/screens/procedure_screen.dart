@@ -1,4 +1,5 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:vehicles_app/components/loader_component.dart';
 import 'package:vehicles_app/helpers/api_helper.dart';
@@ -210,6 +211,22 @@ class _ProcedureScreenState extends State<ProcedureScreen> {
       'price': int.parse(_price),
     };
 
+    var connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.none) {
+      setState(() {
+        _showLoader = false;
+      });
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: 'Verifica que estés conectado a Internet',
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
+
     Response response =
         await ApiHelper.post('/api/Procedures/', request, widget.token.token);
 
@@ -240,6 +257,22 @@ class _ProcedureScreenState extends State<ProcedureScreen> {
       'description': _description,
       'price': int.parse(_price),
     };
+
+    var connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.none) {
+      setState(() {
+        _showLoader = false;
+      });
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: 'Verifica que estés conectado a Internet',
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
 
     Response response = await ApiHelper.put('/api/Procedures/',
         widget.procedure.id.toString(), request, widget.token.token);
@@ -279,6 +312,22 @@ class _ProcedureScreenState extends State<ProcedureScreen> {
     setState(() {
       _showLoader = true;
     });
+
+    var connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.none) {
+      setState(() {
+        _showLoader = false;
+      });
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: 'Verifica que estés conectado a Internet',
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
 
     Response response = await ApiHelper.delete(
         '/api/Procedures/', widget.procedure.id.toString(), widget.token.token);

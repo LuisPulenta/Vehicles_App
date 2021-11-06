@@ -42,7 +42,7 @@ dependencies:
   camera: ^0.9.4              # Para acceder a la cámara
   path_provider: ^2.0.5       # Para acceder a la cámara
   path: ^1.8.0                # Para acceder a la cámara
-
+  connectivity: ^3.0.6        # Para chequear conexión a Internet
 
 dev_dependencies:
   flutter_test:
