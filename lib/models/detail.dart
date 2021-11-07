@@ -6,7 +6,7 @@ class Detail {
   int laborPrice = 0;
   int sparePartsPrice = 0;
   int totalPrice = 0;
-  String remarks = '';
+  String? remarks = '';
 
   Detail(
       {required this.id,

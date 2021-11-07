@@ -180,7 +180,7 @@ class _vehicleTypeScreenState extends State<VehicleTypeScreen> {
     }
 
     Response response =
-        await ApiHelper.post('/api/vehicleTypes/', request, widget.token.token);
+        await ApiHelper.post('/api/vehicleTypes/', request, widget.token);
 
     setState(() {
       _showLoader = false;
@@ -226,7 +226,7 @@ class _vehicleTypeScreenState extends State<VehicleTypeScreen> {
     }
 
     Response response = await ApiHelper.put('/api/vehicleTypes/',
-        widget.vehicleType.id.toString(), request, widget.token.token);
+        widget.vehicleType.id.toString(), request, widget.token);
 
     setState(() {
       _showLoader = false;
@@ -280,8 +280,8 @@ class _vehicleTypeScreenState extends State<VehicleTypeScreen> {
       return;
     }
 
-    Response response = await ApiHelper.delete('/api/vehicleTypes/',
-        widget.vehicleType.id.toString(), widget.token.token);
+    Response response = await ApiHelper.delete(
+        '/api/vehicleTypes/', widget.vehicleType.id.toString(), widget.token);
 
     setState(() {
       _showLoader = false;

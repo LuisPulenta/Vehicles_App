@@ -79,7 +79,7 @@ class _vehicleTypesScreenState extends State<VehicleTypesScreen> {
       return;
     }
 
-    Response response = await ApiHelper.getVehicleTypes(widget.token.token);
+    Response response = await ApiHelper.getVehicleTypes(widget.token);
 
     setState(() {
       _showLoader = false;

@@ -79,7 +79,7 @@ class _brandsScreenState extends State<BrandsScreen> {
       return;
     }
 
-    Response response = await ApiHelper.getBrands(widget.token.token);
+    Response response = await ApiHelper.getBrands(widget.token);
 
     setState(() {
       _showLoader = false;

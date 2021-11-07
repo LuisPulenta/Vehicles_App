@@ -81,7 +81,7 @@ class _UsersScreenState extends State<UsersScreen> {
       return;
     }
 
-    Response response = await ApiHelper.getUsers(widget.token.token);
+    Response response = await ApiHelper.getUsers(widget.token);
 
     setState(() {
       _showLoader = false;
@@ -127,6 +127,10 @@ class _UsersScreenState extends State<UsersScreen> {
       child: ListView(
         children: _users.map((e) {
           return Card(
+            color: Color(0xFFFFFFCC),
+            shadowColor: Color(0xFF0000FF),
+            elevation: 10,
+            margin: EdgeInsets.all(10),
             child: InkWell(
               onTap: () => _goInfoUser(e),
               child: Container(
@@ -150,22 +154,42 @@ class _UsersScreenState extends State<UsersScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Column(
-                              children: [
-                                Text(e.fullName,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    )),
-                                Text(e.email,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                    )),
-                                Text(e.phoneNumber,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                    )),
-                              ],
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(e.fullName,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          )),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(e.email,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                          )),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(e.phoneNumber,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                          )),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
