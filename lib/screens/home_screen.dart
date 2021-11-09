@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vehicles_app/models/token.dart';
@@ -47,14 +48,20 @@ class _HomeScreenState extends State<HomeScreen> {
             height: 40,
           ),
           ClipRRect(
-            borderRadius: BorderRadius.circular(100),
-            child: FadeInImage(
-                placeholder: AssetImage('assets/logo.png'),
-                image: NetworkImage(widget.token.user.imageFullPath),
+              borderRadius: BorderRadius.circular(100),
+              child: CachedNetworkImage(
+                imageUrl: widget.token.user.imageFullPath,
+                errorWidget: (context, url, error) => Icon(Icons.error),
+                fit: BoxFit.cover,
                 height: 200,
                 width: 200,
-                fit: BoxFit.cover),
-          ),
+                placeholder: (context, url) => Image(
+                  image: AssetImage('assets/logo.png'),
+                  fit: BoxFit.cover,
+                  height: 200,
+                  width: 200,
+                ),
+              )),
           SizedBox(
             height: 30,
           ),

@@ -274,7 +274,13 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _showLoginButton() {
     return Expanded(
       child: ElevatedButton(
-        child: Text('Iniciar Sesión'),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Icon(Icons.login),
+            Text('Iniciar sesión'),
+          ],
+        ),
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.resolveWith<Color>(
               (Set<MaterialState> states) {
@@ -289,7 +295,13 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _showRegisterButton() {
     return Expanded(
       child: ElevatedButton(
-        child: Text('Nuevo Usuario'),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Icon(Icons.person_add),
+            Text('Nuevo usuario'),
+          ],
+        ),
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.resolveWith<Color>(
               (Set<MaterialState> states) {

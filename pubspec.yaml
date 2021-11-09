@@ -46,6 +46,7 @@ dependencies:
   image_picker: ^0.8.4+2          # Para acceder a la galería de imágenes
   shared_preferences: ^2.0.8      # Para el rememberme
   cached_network_image: ^3.1.0    # Para mejorar el rendimiento de imágenes
+  carousel_slider: ^4.0.0         # Para carousel de imágenes
 
 dev_dependencies:
   flutter_test:

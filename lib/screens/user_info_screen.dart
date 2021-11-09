@@ -1,4 +1,5 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:vehicles_app/components/loader_component.dart';
@@ -78,12 +79,18 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
             children: <Widget>[
               ClipRRect(
                 borderRadius: BorderRadius.circular(60),
-                child: FadeInImage(
-                  placeholder: AssetImage('assets/logo.png'),
-                  image: NetworkImage(_user.imageFullPath),
-                  width: 120,
-                  height: 120,
+                child: CachedNetworkImage(
+                  imageUrl: _user.imageFullPath,
+                  errorWidget: (context, url, error) => Icon(Icons.error),
                   fit: BoxFit.cover,
+                  height: 120,
+                  width: 120,
+                  placeholder: (context, url) => Image(
+                    image: AssetImage('assets/logo.png'),
+                    fit: BoxFit.cover,
+                    height: 120,
+                    width: 120,
+                  ),
                 ),
               ),
               Positioned(
@@ -300,12 +307,20 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                     padding: EdgeInsets.all(5),
                     child: Row(
                       children: <Widget>[
-                        FadeInImage(
-                            placeholder: AssetImage('assets/logo.png'),
-                            image: NetworkImage(e.imageFullPath),
-                            width: 120,
+                        CachedNetworkImage(
+                          imageUrl: e.imageFullPath,
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
+                          fit: BoxFit.cover,
+                          height: 80,
+                          width: 120,
+                          placeholder: (context, url) => Image(
+                            image: AssetImage('assets/logo.png'),
+                            fit: BoxFit.cover,
                             height: 80,
-                            fit: BoxFit.cover),
+                            width: 120,
+                          ),
+                        ),
                         Expanded(
                             child: Container(
                           margin: EdgeInsets.symmetric(horizontal: 10),

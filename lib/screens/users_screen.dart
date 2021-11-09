@@ -1,4 +1,5 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -140,12 +141,18 @@ class _UsersScreenState extends State<UsersScreen> {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(40),
-                      child: FadeInImage(
-                        placeholder: AssetImage('assets/logo.png'),
-                        image: NetworkImage(e.imageFullPath),
-                        width: 80,
-                        height: 80,
+                      child: CachedNetworkImage(
+                        imageUrl: e.imageFullPath,
+                        errorWidget: (context, url, error) => Icon(Icons.error),
                         fit: BoxFit.cover,
+                        height: 80,
+                        width: 80,
+                        placeholder: (context, url) => Image(
+                          image: AssetImage('assets/logo.png'),
+                          fit: BoxFit.cover,
+                          height: 80,
+                          width: 80,
+                        ),
                       ),
                     ),
                     Expanded(

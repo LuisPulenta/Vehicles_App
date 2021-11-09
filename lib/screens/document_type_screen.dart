@@ -94,7 +94,16 @@ class _documentTypeScreenState extends State<documentTypeScreen> {
         children: <Widget>[
           Expanded(
             child: ElevatedButton(
-              child: Text('Guardar'),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.save),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Text('Guardar'),
+                ],
+              ),
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.resolveWith<Color>(
                     (Set<MaterialState> states) {
@@ -113,7 +122,16 @@ class _documentTypeScreenState extends State<documentTypeScreen> {
               ? Container()
               : Expanded(
                   child: ElevatedButton(
-                    child: Text('Borrar'),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.delete),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        Text('Borrar'),
+                      ],
+                    ),
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
                           (Set<MaterialState> states) {

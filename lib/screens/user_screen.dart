@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:camera/camera.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:email_validator/email_validator.dart';
@@ -144,12 +145,18 @@ class _UserScreenState extends State<UserScreen> {
                 child: _photoChanged
                     ? Image.file(File(_image.path),
                         width: 160, height: 160, fit: BoxFit.cover)
-                    : FadeInImage(
-                        placeholder: AssetImage('assets/logo.png'),
-                        image: NetworkImage(widget.user.imageFullPath),
-                        width: 160,
-                        height: 160,
+                    : CachedNetworkImage(
+                        imageUrl: widget.user.imageFullPath,
+                        errorWidget: (context, url, error) => Icon(Icons.error),
                         fit: BoxFit.cover,
+                        height: 160,
+                        width: 160,
+                        placeholder: (context, url) => Image(
+                          image: AssetImage('assets/logo.png'),
+                          fit: BoxFit.cover,
+                          height: 160,
+                          width: 160,
+                        ),
                       ),
               ),
       ),
@@ -376,7 +383,16 @@ class _UserScreenState extends State<UserScreen> {
         children: <Widget>[
           Expanded(
             child: ElevatedButton(
-              child: Text('Guardar'),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.save),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Text('Guardar'),
+                ],
+              ),
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.resolveWith<Color>(
                     (Set<MaterialState> states) {
@@ -395,7 +411,16 @@ class _UserScreenState extends State<UserScreen> {
               ? Container()
               : Expanded(
                   child: ElevatedButton(
-                    child: Text('Borrar'),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.delete),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        Text('Borrar'),
+                      ],
+                    ),
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
                           (Set<MaterialState> states) {
