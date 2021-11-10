@@ -166,11 +166,13 @@ class _UsersScreenState extends State<UsersScreen> {
                                 children: [
                                   Row(
                                     children: [
-                                      Text(e.fullName,
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          )),
+                                      Expanded(
+                                        child: Text(e.fullName,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            )),
+                                      ),
                                     ],
                                   ),
                                   SizedBox(

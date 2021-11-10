@@ -397,21 +397,39 @@ class _VehicleScreenState extends State<VehicleScreen> {
     );
   }
 
-  Future<Null> _takePicture() async {
+  Future _takePicture() async {
     WidgetsFlutterBinding.ensureInitialized();
     final cameras = await availableCameras();
-    final firstCamera = cameras.first;
-    Response? response = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => TakePictureScreen(
-                  camera: firstCamera,
-                )));
-    if (response != null) {
-      setState(() {
-        _photoChanged = true;
-        _image = response.result;
-      });
+    var firstCamera = cameras.first;
+    var response1 = await showAlertDialog(
+        context: context,
+        title: 'Seleccionar cámara',
+        message: '¿Qué cámara desea utilizar?',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: 'no', label: 'Trasera'),
+          AlertDialogAction(key: 'yes', label: 'Delantera'),
+          AlertDialogAction(key: 'cancel', label: 'Cancelar'),
+        ]);
+    if (response1 == 'yes') {
+      firstCamera = cameras.first;
+    }
+    if (response1 == 'no') {
+      firstCamera = cameras.last;
+    }
+
+    if (response1 != 'cancel') {
+      Response? response = await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => TakePictureScreen(
+                    camera: firstCamera,
+                  )));
+      if (response != null) {
+        setState(() {
+          _photoChanged = true;
+          _image = response.result;
+        });
+      }
     }
   }
 

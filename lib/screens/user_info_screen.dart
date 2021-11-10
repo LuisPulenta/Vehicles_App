@@ -11,6 +11,7 @@ import 'package:vehicles_app/models/user.dart';
 import 'package:vehicles_app/models/vehicle.dart';
 import 'package:vehicles_app/models/vehicle_type.dart';
 import 'package:vehicles_app/screens/user_screen.dart';
+import 'package:vehicles_app/screens/vehicle_info_screen.dart';
 import 'package:vehicles_app/screens/vehicle_screen.dart';
 
 class UserInfoScreen extends StatefulWidget {
@@ -51,7 +52,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () => _goVehicle(Vehicle(
+        onPressed: () => _goAddVehicle(Vehicle(
             id: 0,
             vehicleType: VehicleType(id: 0, description: ''),
             brand: Brand(id: 0, description: ''),
@@ -322,65 +323,59 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                           ),
                         ),
                         Expanded(
-                            child: Container(
-                          margin: EdgeInsets.symmetric(horizontal: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Expanded(
-                                child: Column(
+                          child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: 10),
+                            child: Column(
+                              children: [
+                                Row(
                                   children: [
-                                    Row(
-                                      children: [
-                                        Text(e.plaque,
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                            )),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(e.vehicleType.description,
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                            )),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Text(e.brand.description,
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                            )),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(e.line,
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                            )),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Text(e.color,
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                            )),
-                                      ],
-                                    ),
+                                    Text(e.plaque,
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        )),
                                   ],
                                 ),
-                              ),
-                            ],
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Row(
+                                  children: [
+                                    Text(e.vehicleType.description,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        )),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(e.brand.description,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        )),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Row(
+                                  children: [
+                                    Text(e.line,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        )),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(e.color,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        )),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        )),
+                        ),
                         Icon(
                           Icons.arrow_forward_ios,
                           size: 40,
@@ -394,6 +389,17 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   }
 
   void _goVehicle(Vehicle vehicle) async {
+    String? result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => VehicleInfoScreen(
+                token: widget.token, user: _user, vehicle: vehicle)));
+    if (result == 'yes') {
+      _getUser();
+    }
+  }
+
+  void _goAddVehicle(Vehicle vehicle) async {
     String? result = await Navigator.push(
         context,
         MaterialPageRoute(
