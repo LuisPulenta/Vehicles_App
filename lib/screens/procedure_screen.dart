@@ -37,7 +37,8 @@ class _ProcedureScreenState extends State<ProcedureScreen> {
     super.initState();
     _description = widget.procedure.description;
     _descriptionController.text = _description;
-    _price = widget.procedure.price.toString();
+    _price =
+        widget.procedure.price == 0 ? '' : widget.procedure.price.toString();
     _priceController.text = _price;
   }
 

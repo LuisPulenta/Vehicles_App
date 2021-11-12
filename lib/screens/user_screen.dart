@@ -15,7 +15,7 @@ import 'package:vehicles_app/models/document_type.dart';
 import 'package:vehicles_app/models/user.dart';
 import 'package:vehicles_app/models/response.dart';
 import 'package:vehicles_app/models/token.dart';
-import 'package:vehicles_app/screens/take_picture.dart';
+import 'package:vehicles_app/screens/take_picture_screen.dart';
 
 class UserScreen extends StatefulWidget {
   final Token token;
@@ -71,26 +71,7 @@ class _UserScreenState extends State<UserScreen> {
   void initState() {
     super.initState();
     _getDocumentTypes();
-
-    _firstName = widget.user.firstName;
-    _firstNameController.text = _firstName;
-
-    _lastName = widget.user.lastName;
-    _lastNameController.text = _lastName;
-
-    _document = widget.user.document;
-    _documentController.text = _document;
-
-    _documentTypeId = widget.user.documentType.id;
-
-    _address = widget.user.address;
-    _addressController.text = _address;
-
-    _email = widget.user.email;
-    _emailController.text = _email;
-
-    _phoneNumber = widget.user.phoneNumber;
-    _phoneNumberController.text = _phoneNumber;
+    _loadFieldValues();
   }
 
   @override
@@ -689,7 +670,7 @@ class _UserScreenState extends State<UserScreen> {
       return;
     }
 
-    Response response = await ApiHelper.getDocumentTypes(widget.token);
+    Response response = await ApiHelper.getDocumentTypes();
 
     setState(() {
       _showLoader = false;
@@ -756,5 +737,27 @@ class _UserScreenState extends State<UserScreen> {
         _image = image;
       });
     }
+  }
+
+  void _loadFieldValues() {
+    _firstName = widget.user.firstName;
+    _firstNameController.text = _firstName;
+
+    _lastName = widget.user.lastName;
+    _lastNameController.text = _lastName;
+
+    _document = widget.user.document;
+    _documentController.text = _document;
+
+    _documentTypeId = widget.user.documentType.id;
+
+    _address = widget.user.address;
+    _addressController.text = _address;
+
+    _email = widget.user.email;
+    _emailController.text = _email;
+
+    _phoneNumber = widget.user.phoneNumber;
+    _phoneNumberController.text = _phoneNumber;
   }
 }

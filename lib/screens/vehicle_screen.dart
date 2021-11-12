@@ -17,7 +17,7 @@ import 'package:vehicles_app/models/token.dart';
 import 'package:vehicles_app/models/user.dart';
 import 'package:vehicles_app/models/vehicle.dart';
 import 'package:vehicles_app/models/vehicle_type.dart';
-import 'package:vehicles_app/screens/take_picture.dart';
+import 'package:vehicles_app/screens/take_picture_screen.dart';
 
 class VehicleScreen extends StatefulWidget {
   final Token token;

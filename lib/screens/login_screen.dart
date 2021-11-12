@@ -9,6 +9,7 @@ import 'package:vehicles_app/helpers/constants.dart';
 import 'package:vehicles_app/models/token.dart';
 import 'package:vehicles_app/components/loader_component.dart';
 import 'package:vehicles_app/screens/home_screen.dart';
+import 'package:vehicles_app/screens/register_user_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -313,8 +314,9 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  _register() {
-    return Container();
+  void _register() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => RegisterUserScreen()));
   }
 
   void _storeUser(String body) async {

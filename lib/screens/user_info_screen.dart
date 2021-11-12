@@ -394,9 +394,8 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
         MaterialPageRoute(
             builder: (context) => VehicleInfoScreen(
                 token: widget.token, user: _user, vehicle: vehicle)));
-    if (result == 'yes') {
-      _getUser();
-    }
+
+    _getUser();
   }
 
   void _goAddVehicle(Vehicle vehicle) async {
