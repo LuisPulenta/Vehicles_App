@@ -212,8 +212,11 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     String? result = await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                UserScreen(token: widget.token, user: _user)));
+            builder: (context) => UserScreen(
+                  token: widget.token,
+                  user: _user,
+                  myProfile: false,
+                )));
     if (result == 'yes') {
       //TODO: Pending refresh user info
       _getUser();

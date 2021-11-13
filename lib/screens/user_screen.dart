@@ -15,13 +15,16 @@ import 'package:vehicles_app/models/document_type.dart';
 import 'package:vehicles_app/models/user.dart';
 import 'package:vehicles_app/models/response.dart';
 import 'package:vehicles_app/models/token.dart';
+import 'package:vehicles_app/screens/change_password_screen.dart';
 import 'package:vehicles_app/screens/take_picture_screen.dart';
 
 class UserScreen extends StatefulWidget {
   final Token token;
   final User user;
+  final bool myProfile;
 
-  UserScreen({required this.token, required this.user});
+  UserScreen(
+      {required this.token, required this.user, required this.myProfile});
 
   @override
   _UserScreenState createState() => _UserScreenState();
@@ -390,27 +393,51 @@ class _UserScreenState extends State<UserScreen> {
                 ),
           widget.user.id.isEmpty
               ? Container()
-              : Expanded(
-                  child: ElevatedButton(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.delete),
-                        SizedBox(
-                          width: 15,
+              : widget.myProfile
+                  ? Expanded(
+                      child: ElevatedButton(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.lock),
+                            SizedBox(
+                              width: 15,
+                            ),
+                            Text('Contraseña'),
+                          ],
                         ),
-                        Text('Borrar'),
-                      ],
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.resolveWith<Color>(
+                                  (Set<MaterialState> states) {
+                            return Color(0xFFB4161B);
+                          }),
+                        ),
+                        onPressed: () => _changePassword(),
+                      ),
+                    )
+                  : Expanded(
+                      child: ElevatedButton(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.delete),
+                            SizedBox(
+                              width: 15,
+                            ),
+                            Text('Borrar'),
+                          ],
+                        ),
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.resolveWith<Color>(
+                                  (Set<MaterialState> states) {
+                            return Color(0xFFB4161B);
+                          }),
+                        ),
+                        onPressed: () => _confirmDelete(),
+                      ),
                     ),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                        return Color(0xFFB4161B);
-                      }),
-                    ),
-                    onPressed: () => _confirmDelete(),
-                  ),
-                ),
         ],
       ),
     );
@@ -646,6 +673,7 @@ class _UserScreenState extends State<UserScreen> {
           ]);
       return;
     }
+    Navigator.pop(context, '');
     Navigator.pop(context, 'yes');
   }
 
@@ -759,5 +787,14 @@ class _UserScreenState extends State<UserScreen> {
 
     _phoneNumber = widget.user.phoneNumber;
     _phoneNumberController.text = _phoneNumber;
+  }
+
+  void _changePassword() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ChangePasswordScreen(
+                  token: widget.token,
+                )));
   }
 }

@@ -478,7 +478,16 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
   Widget _showRegisterButton() {
     return Expanded(
       child: ElevatedButton(
-        child: Text('Registrar Usuario'),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.person_add),
+            SizedBox(
+              width: 15,
+            ),
+            Text('Registrar usuario'),
+          ],
+        ),
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.resolveWith<Color>(
               (Set<MaterialState> states) {

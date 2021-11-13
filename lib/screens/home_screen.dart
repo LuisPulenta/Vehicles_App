@@ -1,10 +1,16 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vehicles_app/helpers/api_helper.dart';
+import 'package:vehicles_app/models/response.dart';
 import 'package:vehicles_app/models/token.dart';
+import 'package:vehicles_app/models/user.dart';
 import 'package:vehicles_app/screens/brands_screen.dart';
 import 'package:vehicles_app/screens/login_screen.dart';
 import 'package:vehicles_app/screens/procedures_screen.dart';
+import 'package:vehicles_app/screens/user_screen.dart';
 import 'package:vehicles_app/screens/users_screen.dart';
 import 'package:vehicles_app/screens/vehicle_types_screen.dart';
 
@@ -20,6 +26,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool _showLoader = false;
+  late User _user;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _user = widget.token.user;
+    _getUser();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,9 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text('Vehicles'),
       ),
       body: _getBody(),
-      drawer: widget.token.user.userType == 0
-          ? _getMechanicMenu()
-          : _getCustomerMenu(),
+      drawer: _user.userType == 0 ? _getMechanicMenu() : _getCustomerMenu(),
     );
   }
 
@@ -50,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ClipRRect(
               borderRadius: BorderRadius.circular(100),
               child: CachedNetworkImage(
-                imageUrl: widget.token.user.imageFullPath,
+                imageUrl: _user.imageFullPath,
                 errorWidget: (context, url, error) => Icon(Icons.error),
                 fit: BoxFit.cover,
                 height: 200,
@@ -67,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Center(
             child: Text(
-              'Bienvenido/a ${widget.token.user.fullName}',
+              'Bienvenido/a ${_user.fullName}',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           )
@@ -149,7 +164,19 @@ class _HomeScreenState extends State<HomeScreen> {
           ListTile(
             leading: Icon(Icons.face),
             title: Text('Editar perfil'),
-            onTap: () {},
+            onTap: () async {
+              String? result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => UserScreen(
+                            token: widget.token,
+                            user: _user,
+                            myProfile: true,
+                          )));
+              if (result == 'yes') {
+                _getUser();
+              }
+            },
           ),
           ListTile(
             leading: Icon(Icons.logout),
@@ -181,7 +208,19 @@ class _HomeScreenState extends State<HomeScreen> {
           ListTile(
             leading: Icon(Icons.face),
             title: Text('Editar perfil'),
-            onTap: () {},
+            onTap: () async {
+              String? result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => UserScreen(
+                            token: widget.token,
+                            user: _user,
+                            myProfile: true,
+                          )));
+              if (result == 'yes') {
+                _getUser();
+              }
+            },
           ),
           ListTile(
             leading: Icon(Icons.logout),
@@ -201,5 +240,47 @@ class _HomeScreenState extends State<HomeScreen> {
     await prefs.setString('userBody', '');
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => LoginScreen()));
+  }
+
+  Future<Null> _getUser() async {
+    setState(() {
+      _showLoader = true;
+    });
+
+    var connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.none) {
+      setState(() {
+        _showLoader = false;
+      });
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: 'Verifica que estés conectado a Internet',
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
+
+    Response response = await ApiHelper.getUser(widget.token, _user.id);
+
+    setState(() {
+      _showLoader = false;
+    });
+
+    if (!response.isSuccess) {
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: response.message,
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
+    setState(() {
+      _user = response.result;
+    });
   }
 }

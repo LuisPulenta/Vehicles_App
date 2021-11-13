@@ -802,7 +802,7 @@ class _VehicleScreenState extends State<VehicleScreen> {
           ]);
       return;
     }
-
+    Navigator.pop(context, '');
     Navigator.pop(context, 'yes');
   }
 

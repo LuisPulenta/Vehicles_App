@@ -9,6 +9,7 @@ import 'package:vehicles_app/helpers/constants.dart';
 import 'package:vehicles_app/models/token.dart';
 import 'package:vehicles_app/components/loader_component.dart';
 import 'package:vehicles_app/screens/home_screen.dart';
+import 'package:vehicles_app/screens/recover_password_screen.dart';
 import 'package:vehicles_app/screens/register_user_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -57,6 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   _showEmail(),
                   _showPassword(),
                   _showRememberme(),
+                  _showForgotPassword(),
                   _showButtons(),
                 ],
               ),
@@ -323,5 +325,23 @@ class _LoginScreenState extends State<LoginScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isRemembered', true);
     await prefs.setString('userBody', body);
+  }
+
+  Widget _showForgotPassword() {
+    return InkWell(
+      onTap: () => _goForgotPassword(),
+      child: Container(
+        margin: EdgeInsets.only(bottom: 20),
+        child: Text(
+          '¿Has olvidado tu contraseña?',
+          style: TextStyle(color: Colors.blue),
+        ),
+      ),
+    );
+  }
+
+  void _goForgotPassword() {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => RecoverPasswordScreen()));
   }
 }
