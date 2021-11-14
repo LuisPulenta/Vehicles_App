@@ -22,12 +22,14 @@ class HistoryInfoScreen extends StatefulWidget {
   final User user;
   final Vehicle vehicle;
   final History history;
+  final bool isAdmin;
 
   HistoryInfoScreen(
       {required this.token,
       required this.user,
       required this.vehicle,
-      required this.history});
+      required this.history,
+      required this.isAdmin});
 
   @override
   _HistoryInfoScreenState createState() => _HistoryInfoScreenState();
@@ -60,16 +62,18 @@ class _HistoryInfoScreenState extends State<HistoryInfoScreen> {
               )
             : _getContent(),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => _goDetail(Detail(
-            id: 0,
-            procedure: Procedure(id: 0, description: '', price: 0),
-            laborPrice: 0,
-            sparePartsPrice: 0,
-            totalPrice: 0,
-            remarks: '')),
-      ),
+      floatingActionButton: widget.isAdmin
+          ? FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () => _goDetail(Detail(
+                  id: 0,
+                  procedure: Procedure(id: 0, description: '', price: 0),
+                  laborPrice: 0,
+                  sparePartsPrice: 0,
+                  totalPrice: 0,
+                  remarks: '')),
+            )
+          : Container(),
     );
   }
 
@@ -85,6 +89,10 @@ class _HistoryInfoScreenState extends State<HistoryInfoScreen> {
   }
 
   void _goDetail(Detail detail) async {
+    if (!widget.isAdmin) {
+      return;
+    }
+
     String? result = await Navigator.push(
         context,
         MaterialPageRoute(
@@ -430,25 +438,27 @@ class _HistoryInfoScreenState extends State<HistoryInfoScreen> {
                   ),
                 ],
               ),
-              Positioned(
-                  bottom: 0,
-                  left: 280,
-                  child: InkWell(
-                    onTap: () => _goEditHistory(),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: Container(
-                        color: Colors.green[50],
-                        height: 40,
-                        width: 40,
-                        child: Icon(
-                          Icons.edit,
-                          size: 30,
-                          color: Colors.blue,
+              widget.isAdmin
+                  ? Positioned(
+                      bottom: 0,
+                      left: 280,
+                      child: InkWell(
+                        onTap: () => _goEditHistory(),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(30),
+                          child: Container(
+                            color: Colors.green[50],
+                            height: 40,
+                            width: 40,
+                            child: Icon(
+                              Icons.edit,
+                              size: 30,
+                              color: Colors.blue,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ))
+                      ))
+                  : Container()
             ],
           ),
         ],
@@ -536,10 +546,12 @@ class _HistoryInfoScreenState extends State<HistoryInfoScreen> {
                       ],
                     ),
                   )),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    size: 40,
-                  )
+                  widget.isAdmin
+                      ? Icon(
+                          Icons.arrow_forward_ios,
+                          size: 40,
+                        )
+                      : Container()
                 ],
               ),
             ),

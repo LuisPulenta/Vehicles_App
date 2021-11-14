@@ -312,8 +312,8 @@ class _UsersScreenState extends State<UsersScreen> {
     String? result = await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                UserInfoScreen(token: widget.token, user: user)));
+            builder: (context) => UserInfoScreen(
+                token: widget.token, user: user, isAdmin: true)));
     if (result == 'yes') {
       _getUsers();
     }
