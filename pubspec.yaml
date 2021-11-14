@@ -47,6 +47,9 @@ dependencies:
   shared_preferences: ^2.0.8      # Para el rememberme
   cached_network_image: ^3.1.0    # Para mejorar el rendimiento de imágenes
   carousel_slider: ^4.0.0         # Para carousel de imágenes
+  url_launcher: ^6.0.12           # Para hablar por teléfono
+  whatsapp_unilink: ^2.0.0        # Para mandar whatsapp
+
 
 dev_dependencies:
   flutter_test:

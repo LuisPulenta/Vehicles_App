@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:vehicles_app/helpers/api_helper.dart';
 import 'package:vehicles_app/models/response.dart';
 import 'package:vehicles_app/models/token.dart';
@@ -14,6 +15,7 @@ import 'package:vehicles_app/screens/user_info_screen.dart';
 import 'package:vehicles_app/screens/user_screen.dart';
 import 'package:vehicles_app/screens/users_screen.dart';
 import 'package:vehicles_app/screens/vehicle_types_screen.dart';
+import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 
 import 'document_types_screen.dart';
 
@@ -51,43 +53,99 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _getBody() {
-    return Container(
-      margin: EdgeInsets.all(30),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image(
-            image: AssetImage('assets/logo.png'),
-            width: 250,
-          ),
-          SizedBox(
-            height: 40,
-          ),
-          ClipRRect(
-              borderRadius: BorderRadius.circular(100),
-              child: CachedNetworkImage(
-                imageUrl: _user.imageFullPath,
-                errorWidget: (context, url, error) => Icon(Icons.error),
-                fit: BoxFit.cover,
-                height: 200,
-                width: 200,
-                placeholder: (context, url) => Image(
-                  image: AssetImage('assets/logo.png'),
+    return SingleChildScrollView(
+      child: Container(
+        margin: EdgeInsets.all(30),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image(
+              image: AssetImage('assets/logo.png'),
+              width: 250,
+            ),
+            SizedBox(
+              height: 40,
+            ),
+            ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: CachedNetworkImage(
+                  imageUrl: _user.imageFullPath,
+                  errorWidget: (context, url, error) => Icon(Icons.error),
                   fit: BoxFit.cover,
                   height: 200,
                   width: 200,
-                ),
-              )),
-          SizedBox(
-            height: 30,
-          ),
-          Center(
-            child: Text(
-              'Bienvenido/a ${_user.fullName}',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  placeholder: (context, url) => Image(
+                    image: AssetImage('assets/logo.png'),
+                    fit: BoxFit.cover,
+                    height: 200,
+                    width: 200,
+                  ),
+                )),
+            SizedBox(
+              height: 30,
             ),
-          )
-        ],
+            Center(
+              child: Text(
+                'Bienvenido/a ${_user.fullName}',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text('Llamar al taller'),
+                SizedBox(
+                  width: 10,
+                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    height: 40,
+                    width: 40,
+                    color: Colors.blue,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.call,
+                        color: Colors.white,
+                      ),
+                      onPressed: () => launch("tel://3516814963"),
+                    ),
+                  ),
+                )
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text('Enviar mensaje al taller'),
+                SizedBox(
+                  width: 10,
+                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    height: 40,
+                    width: 40,
+                    color: Colors.green,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.insert_comment,
+                        color: Colors.white,
+                      ),
+                      onPressed: () => _sendMessage(),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -292,5 +350,13 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _user = response.result;
     });
+  }
+
+  void _sendMessage() async {
+    final link = WhatsAppUnilink(
+      phoneNumber: '3516814963',
+      text: 'Hola soy ${widget.token.user.fullName} cliente del taller',
+    );
+    await launch('$link');
   }
 }
