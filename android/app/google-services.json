@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "486366165091",
+    "project_id": "vehicles-4a082",
+    "storage_bucket": "vehicles-4a082.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:486366165091:android:a067d22d95cbaafa6d6056",
+        "android_client_info": {
+          "package_name": "com.luisnu.vehicles"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "486366165091-qqqje8or0c1mch5aje7lbv7973dc2s36.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.luisnu.vehicles",
+            "certificate_hash": "bfce6c53ed82ff13572091e9dda6368730f841ca"
+          }
+        },
+        {
+          "client_id": "486366165091-1e54m86o9oe6hhauijm4idad7l4a3tq1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNkXSqRHLc3LeN4aKcKFTB50pJDcVhxZo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "486366165091-1e54m86o9oe6hhauijm4idad7l4a3tq1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
