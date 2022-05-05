@@ -281,28 +281,31 @@ class _UsersScreenState extends State<UsersScreen> {
 
   void _goAdd() async {
     String? result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => UserScreen(
-                token: widget.token,
-                myProfile: false,
-                user: User(
-                  firstName: '',
-                  lastName: '',
-                  documentType: DocumentType(id: 0, description: ''),
-                  document: '',
-                  address: '',
-                  imageId: '',
-                  imageFullPath: '',
-                  userType: 1,
-                  fullName: '',
-                  vehicles: [],
-                  vehiclesCount: 0,
-                  id: '',
-                  userName: '',
-                  email: '',
-                  phoneNumber: '',
-                ))));
+      context,
+      MaterialPageRoute(
+        builder: (context) => UserScreen(
+          token: widget.token,
+          myProfile: false,
+          user: User(
+            firstName: '',
+            lastName: '',
+            documentType: DocumentType(id: 0, description: ''),
+            document: '',
+            address: '',
+            imageId: '',
+            imageFullPath: '',
+            userType: 1,
+            fullName: '',
+            vehicles: [],
+            vehiclesCount: 0,
+            id: '',
+            userName: '',
+            email: '',
+            phoneNumber: '',
+          ),
+        ),
+      ),
+    );
     if (result == 'yes') {
       _getUsers();
     }
@@ -310,10 +313,12 @@ class _UsersScreenState extends State<UsersScreen> {
 
   void _goInfoUser(User user) async {
     String? result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => UserInfoScreen(
-                token: widget.token, user: user, isAdmin: true)));
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            UserInfoScreen(token: widget.token, user: user, isAdmin: true),
+      ),
+    );
     if (result == 'yes') {
       _getUsers();
     }
