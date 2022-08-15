@@ -833,7 +833,7 @@ class _VehicleScreenState extends State<VehicleScreen> {
         children: [
           CarouselSlider(
             options: CarouselOptions(
-                height: 200,
+                height: 300,
                 autoPlay: true,
                 autoPlayInterval: Duration(seconds: 3),
                 enlargeCenterPage: true,
@@ -856,13 +856,13 @@ class _VehicleScreenState extends State<VehicleScreen> {
                           errorWidget: (context, url, error) =>
                               Icon(Icons.error),
                           fit: BoxFit.cover,
-                          height: 300,
-                          width: 300,
+                          height: 100,
+                          width: 100,
                           placeholder: (context, url) => Image(
                             image: AssetImage('assets/logo.png'),
                             fit: BoxFit.cover,
-                            height: 300,
-                            width: 300,
+                            height: 100,
+                            width: 100,
                           ),
                         ),
                       ));
