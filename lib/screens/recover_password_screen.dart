@@ -1,5 +1,5 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:vehicles_app/components/loader_component.dart';
@@ -24,21 +24,12 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Recuperar contraseña'),
-      ),
+      appBar: AppBar(title: Text('Recuperar contraseña')),
       body: Stack(
         children: <Widget>[
-          Column(
-            children: <Widget>[
-              _showEmail(),
-              _showButtons(),
-            ],
-          ),
+          Column(children: <Widget>[_showEmail(), _showButtons()]),
           _showLoader
-              ? LoaderComponent(
-                  text: 'Por favor espere...',
-                )
+              ? LoaderComponent(text: 'Por favor espere...')
               : Container(),
         ],
       ),
@@ -70,9 +61,7 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
       margin: EdgeInsets.only(left: 10, right: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          _showRecoverButton(),
-        ],
+        children: <Widget>[_showRecoverButton()],
       ),
     );
   }
@@ -82,8 +71,9 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
       child: ElevatedButton(
         child: Text('Recuperar Contraseña'),
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.resolveWith<Color>(
-              (Set<MaterialState> states) {
+          backgroundColor: MaterialStateProperty.resolveWith<Color>((
+            Set<MaterialState> states,
+          ) {
             return Color(0xFF120E43);
           }),
         ),
@@ -129,18 +119,17 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estes conectado a internet.',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estes conectado a internet.',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
-    Map<String, dynamic> request = {
-      'email': _email,
-    };
+    Map<String, dynamic> request = {'email': _email};
 
     Response response = await ApiHelper.postNoToken(
       '/api/Account/RecoverPassword',
@@ -153,23 +142,25 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
     await showAlertDialog(
-        context: context,
-        title: 'Confirmación',
-        message:
-            'Se le ha enviado un correo con las instrucciones para recuperar su contraseña',
-        actions: <AlertDialogAction>[
-          AlertDialogAction(key: null, label: 'Aceptar'),
-        ]);
+      context: context,
+      title: 'Confirmación',
+      message:
+          'Se le ha enviado un correo con las instrucciones para recuperar su contraseña',
+      actions: <AlertDialogAction>[
+        AlertDialogAction(key: null, label: 'Aceptar'),
+      ],
+    );
 
     Navigator.pop(context);
   }

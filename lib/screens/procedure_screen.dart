@@ -1,5 +1,5 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:vehicles_app/components/loader_component.dart';
 import 'package:vehicles_app/helpers/api_helper.dart';
@@ -37,45 +37,41 @@ class _ProcedureScreenState extends State<ProcedureScreen> {
     super.initState();
     _description = widget.procedure.description;
     _descriptionController.text = _description;
-    _price =
-        widget.procedure.price == 0 ? '' : widget.procedure.price.toString();
+    _price = widget.procedure.price == 0
+        ? ''
+        : widget.procedure.price.toString();
     _priceController.text = _price;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xFFE4D359),
-        appBar: AppBar(
-          title: Text(widget.procedure.id == 0
+      backgroundColor: Color(0xFFE4D359),
+      appBar: AppBar(
+        title: Text(
+          widget.procedure.id == 0
               ? 'Nuevo procedimiento'
-              : widget.procedure.description),
+              : widget.procedure.description,
         ),
-        body: Stack(
-          children: [
-            Column(
-              children: <Widget>[
-                SizedBox(
-                  height: 25,
-                ),
-                _showDescription(),
-                SizedBox(
-                  height: 5,
-                ),
-                _showPrice(),
-                SizedBox(
-                  height: 5,
-                ),
-                _showButtons(),
-              ],
-            ),
-            _showLoader
-                ? LoaderComponent(
-                    text: 'Por favor espere...',
-                  )
-                : Container(),
-          ],
-        ));
+      ),
+      body: Stack(
+        children: [
+          Column(
+            children: <Widget>[
+              SizedBox(height: 25),
+              _showDescription(),
+              SizedBox(height: 5),
+              _showPrice(),
+              SizedBox(height: 5),
+              _showButtons(),
+            ],
+          ),
+          _showLoader
+              ? LoaderComponent(text: 'Por favor espere...')
+              : Container(),
+        ],
+      ),
+    );
   }
 
   Widget _showDescription() {
@@ -84,14 +80,14 @@ class _ProcedureScreenState extends State<ProcedureScreen> {
       child: TextField(
         controller: _descriptionController,
         decoration: InputDecoration(
-            fillColor: Colors.white,
-            filled: true,
-            hintText: 'Ingresa una Descripción...',
-            labelText: 'Descripción',
-            errorText: _descriptionShowError ? _descriptionError : null,
-            suffixIcon: Icon(Icons.description),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+          fillColor: Colors.white,
+          filled: true,
+          hintText: 'Ingresa una Descripción...',
+          labelText: 'Descripción',
+          errorText: _descriptionShowError ? _descriptionError : null,
+          suffixIcon: Icon(Icons.description),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         onChanged: (value) {
           _description = value;
         },
@@ -103,18 +99,20 @@ class _ProcedureScreenState extends State<ProcedureScreen> {
     return Container(
       padding: EdgeInsets.all(10),
       child: TextField(
-        keyboardType:
-            TextInputType.numberWithOptions(decimal: true, signed: false),
+        keyboardType: TextInputType.numberWithOptions(
+          decimal: true,
+          signed: false,
+        ),
         controller: _priceController,
         decoration: InputDecoration(
-            fillColor: Colors.white,
-            filled: true,
-            hintText: 'Ingresa un Precio...',
-            labelText: 'Precio',
-            errorText: _priceShowError ? _priceError : null,
-            suffixIcon: Icon(Icons.attach_money),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+          fillColor: Colors.white,
+          filled: true,
+          hintText: 'Ingresa un Precio...',
+          labelText: 'Precio',
+          errorText: _priceShowError ? _priceError : null,
+          suffixIcon: Icon(Icons.attach_money),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         onChanged: (value) {
           _price = value;
         },
@@ -134,26 +132,21 @@ class _ProcedureScreenState extends State<ProcedureScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.save),
-                  SizedBox(
-                    width: 15,
-                  ),
+                  SizedBox(width: 15),
                   Text('Guardar'),
                 ],
               ),
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
+                backgroundColor: MaterialStateProperty.resolveWith<Color>((
+                  Set<MaterialState> states,
+                ) {
                   return Color(0xFF120E43);
                 }),
               ),
               onPressed: () => _save(),
             ),
           ),
-          widget.procedure.id == 0
-              ? Container()
-              : SizedBox(
-                  width: 20,
-                ),
+          widget.procedure.id == 0 ? Container() : SizedBox(width: 20),
           widget.procedure.id == 0
               ? Container()
               : Expanded(
@@ -162,17 +155,16 @@ class _ProcedureScreenState extends State<ProcedureScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.delete),
-                        SizedBox(
-                          width: 15,
-                        ),
+                        SizedBox(width: 15),
                         Text('Borrar'),
                       ],
                     ),
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                        return Color(0xFFB4161B);
-                      }),
+                        (Set<MaterialState> states) {
+                          return Color(0xFFB4161B);
+                        },
+                      ),
                     ),
                     onPressed: () => _confirmDelete(),
                   ),
@@ -237,17 +229,21 @@ class _ProcedureScreenState extends State<ProcedureScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
-    Response response =
-        await ApiHelper.post('/api/Procedures/', request, widget.token);
+    Response response = await ApiHelper.post(
+      '/api/Procedures/',
+      request,
+      widget.token,
+    );
 
     setState(() {
       _showLoader = false;
@@ -255,12 +251,13 @@ class _ProcedureScreenState extends State<ProcedureScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
     Navigator.pop(context, 'yes');
@@ -284,17 +281,22 @@ class _ProcedureScreenState extends State<ProcedureScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
-    Response response = await ApiHelper.put('/api/Procedures/',
-        widget.procedure.id.toString(), request, widget.token);
+    Response response = await ApiHelper.put(
+      '/api/Procedures/',
+      widget.procedure.id.toString(),
+      request,
+      widget.token,
+    );
 
     setState(() {
       _showLoader = false;
@@ -302,12 +304,13 @@ class _ProcedureScreenState extends State<ProcedureScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
     Navigator.pop(context, 'yes');
@@ -315,13 +318,14 @@ class _ProcedureScreenState extends State<ProcedureScreen> {
 
   void _confirmDelete() async {
     var response = await showAlertDialog(
-        context: context,
-        title: 'Confirmación',
-        message: '¿Estás seguro de querer borrar el registro?',
-        actions: <AlertDialogAction>[
-          AlertDialogAction(key: 'no', label: 'No'),
-          AlertDialogAction(key: 'yes', label: 'Sí'),
-        ]);
+      context: context,
+      title: 'Confirmación',
+      message: '¿Estás seguro de querer borrar el registro?',
+      actions: <AlertDialogAction>[
+        AlertDialogAction(key: 'no', label: 'No'),
+        AlertDialogAction(key: 'yes', label: 'Sí'),
+      ],
+    );
     if (response == 'yes') {
       _deleteRecord();
     }
@@ -339,17 +343,21 @@ class _ProcedureScreenState extends State<ProcedureScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
     Response response = await ApiHelper.delete(
-        '/api/Procedures/', widget.procedure.id.toString(), widget.token);
+      '/api/Procedures/',
+      widget.procedure.id.toString(),
+      widget.token,
+    );
 
     setState(() {
       _showLoader = false;
@@ -357,12 +365,13 @@ class _ProcedureScreenState extends State<ProcedureScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
     Navigator.pop(context, 'yes');

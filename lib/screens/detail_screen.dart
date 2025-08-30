@@ -1,5 +1,5 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:vehicles_app/components/loader_component.dart';
 import 'package:vehicles_app/helpers/api_helper.dart';
@@ -18,12 +18,13 @@ class DetailScreen extends StatefulWidget {
   final History history;
   final Detail detail;
 
-  DetailScreen(
-      {required this.token,
-      required this.user,
-      required this.vehicle,
-      required this.history,
-      required this.detail});
+  DetailScreen({
+    required this.token,
+    required this.user,
+    required this.vehicle,
+    required this.history,
+    required this.detail,
+  });
 
   @override
   _DetailScreenState createState() => _DetailScreenState();
@@ -62,32 +63,33 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xFFFFFFCC),
-        appBar: AppBar(
-          title: Text(widget.detail.id == 0
+      backgroundColor: Color(0xFFFFFFCC),
+      appBar: AppBar(
+        title: Text(
+          widget.detail.id == 0
               ? 'Nuevo Procedimiento'
-              : widget.detail.procedure.description),
+              : widget.detail.procedure.description,
         ),
-        body: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  _showProcedure(),
-                  _showRemarks(),
-                  _showLaborPrices(),
-                  _showSparePartsPrice(),
-                  _showButtons(),
-                ],
-              ),
+      ),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                _showProcedure(),
+                _showRemarks(),
+                _showLaborPrices(),
+                _showSparePartsPrice(),
+                _showButtons(),
+              ],
             ),
-            _showLoader
-                ? LoaderComponent(
-                    text: 'Por favor espere...',
-                  )
-                : Container(),
-          ],
-        ));
+          ),
+          _showLoader
+              ? LoaderComponent(text: 'Por favor espere...')
+              : Container(),
+        ],
+      ),
+    );
   }
 
   Future<Null> _getProcedures() async {
@@ -102,12 +104,13 @@ class _DetailScreenState extends State<DetailScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -119,12 +122,13 @@ class _DetailScreenState extends State<DetailScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -154,9 +158,11 @@ class _DetailScreenState extends State<DetailScreen> {
                 hintText: 'Seleccione un Procedimiento...',
                 labelText: 'Procedimiento',
                 errorText: _procedureIdShowError ? _procedureIdError : null,
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-              )),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
     );
   }
 
@@ -169,14 +175,14 @@ class _DetailScreenState extends State<DetailScreen> {
         maxLines: 4,
         controller: _remarksController,
         decoration: InputDecoration(
-            fillColor: Colors.white,
-            filled: true,
-            hintText: 'Ingresa un Comentario...',
-            labelText: 'Comentario',
-            errorText: _remarksShowError ? _remarksError : null,
-            suffixIcon: Icon(Icons.description),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+          fillColor: Colors.white,
+          filled: true,
+          hintText: 'Ingresa un Comentario...',
+          labelText: 'Comentario',
+          errorText: _remarksShowError ? _remarksError : null,
+          suffixIcon: Icon(Icons.description),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         onChanged: (value) {
           _remarks = value;
         },
@@ -188,18 +194,20 @@ class _DetailScreenState extends State<DetailScreen> {
     return Container(
       padding: EdgeInsets.all(10),
       child: TextField(
-        keyboardType:
-            TextInputType.numberWithOptions(decimal: true, signed: false),
+        keyboardType: TextInputType.numberWithOptions(
+          decimal: true,
+          signed: false,
+        ),
         controller: _laborPriceController,
         decoration: InputDecoration(
-            fillColor: Colors.white,
-            filled: true,
-            hintText: 'Ingresa un Precio de Mano de Obra...',
-            labelText: 'Precio de Mano de Obra',
-            errorText: _laborPriceShowError ? _laborPriceError : null,
-            suffixIcon: Icon(Icons.build),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+          fillColor: Colors.white,
+          filled: true,
+          hintText: 'Ingresa un Precio de Mano de Obra...',
+          labelText: 'Precio de Mano de Obra',
+          errorText: _laborPriceShowError ? _laborPriceError : null,
+          suffixIcon: Icon(Icons.build),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         onChanged: (value) {
           _laborPrice = value;
         },
@@ -211,18 +219,20 @@ class _DetailScreenState extends State<DetailScreen> {
     return Container(
       padding: EdgeInsets.all(10),
       child: TextField(
-        keyboardType:
-            TextInputType.numberWithOptions(decimal: true, signed: false),
+        keyboardType: TextInputType.numberWithOptions(
+          decimal: true,
+          signed: false,
+        ),
         controller: _sparePartsPriceController,
         decoration: InputDecoration(
-            fillColor: Colors.white,
-            filled: true,
-            hintText: 'Ingresa un Precio de Respuestos...',
-            labelText: 'Precio de Respuestos',
-            errorText: _sparePartsPriceShowError ? _sparePartsPriceError : null,
-            suffixIcon: Icon(Icons.attach_money),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+          fillColor: Colors.white,
+          filled: true,
+          hintText: 'Ingresa un Precio de Respuestos...',
+          labelText: 'Precio de Respuestos',
+          errorText: _sparePartsPriceShowError ? _sparePartsPriceError : null,
+          suffixIcon: Icon(Icons.attach_money),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         onChanged: (value) {
           _sparePartsPrice = value;
         },
@@ -242,26 +252,21 @@ class _DetailScreenState extends State<DetailScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.save),
-                  SizedBox(
-                    width: 15,
-                  ),
+                  SizedBox(width: 15),
                   Text('Guardar'),
                 ],
               ),
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
+                backgroundColor: MaterialStateProperty.resolveWith<Color>((
+                  Set<MaterialState> states,
+                ) {
                   return Color(0xFF120E43);
                 }),
               ),
               onPressed: () => _save(),
             ),
           ),
-          widget.detail.id == 0
-              ? Container()
-              : SizedBox(
-                  width: 20,
-                ),
+          widget.detail.id == 0 ? Container() : SizedBox(width: 20),
           widget.detail.id == 0
               ? Container()
               : Expanded(
@@ -270,17 +275,16 @@ class _DetailScreenState extends State<DetailScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.delete),
-                        SizedBox(
-                          width: 15,
-                        ),
+                        SizedBox(width: 15),
                         Text('Borrar'),
                       ],
                     ),
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                        return Color(0xFFB4161B);
-                      }),
+                        (Set<MaterialState> states) {
+                          return Color(0xFFB4161B);
+                        },
+                      ),
                     ),
                     onPressed: () => _confirmDelete(),
                   ),
@@ -292,16 +296,17 @@ class _DetailScreenState extends State<DetailScreen> {
 
   List<DropdownMenuItem<int>> _getComboProcedures() {
     List<DropdownMenuItem<int>> list = [];
-    list.add(DropdownMenuItem(
-      child: Text('Seleccione un Procedimiento...'),
-      value: 0,
-    ));
+    list.add(
+      DropdownMenuItem(child: Text('Seleccione un Procedimiento...'), value: 0),
+    );
 
     _procedures.forEach((procedure) {
-      list.add(DropdownMenuItem(
-        child: Text(procedure.description),
-        value: procedure.id,
-      ));
+      list.add(
+        DropdownMenuItem(
+          child: Text(procedure.description),
+          value: procedure.id,
+        ),
+      );
     });
 
     return list;
@@ -380,12 +385,13 @@ class _DetailScreenState extends State<DetailScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -397,8 +403,11 @@ class _DetailScreenState extends State<DetailScreen> {
       'remarks': _remarks,
     };
 
-    Response response =
-        await ApiHelper.post('/api/Details/', request, widget.token);
+    Response response = await ApiHelper.post(
+      '/api/Details/',
+      request,
+      widget.token,
+    );
 
     setState(() {
       _showLoader = false;
@@ -406,12 +415,13 @@ class _DetailScreenState extends State<DetailScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
     Navigator.pop(context, 'yes');
@@ -432,7 +442,11 @@ class _DetailScreenState extends State<DetailScreen> {
     };
 
     Response response = await ApiHelper.put(
-        '/api/Details/', widget.detail.id.toString(), request, widget.token);
+      '/api/Details/',
+      widget.detail.id.toString(),
+      request,
+      widget.token,
+    );
 
     setState(() {
       _showLoader = false;
@@ -440,12 +454,13 @@ class _DetailScreenState extends State<DetailScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
     Navigator.pop(context, 'yes');
@@ -453,13 +468,14 @@ class _DetailScreenState extends State<DetailScreen> {
 
   void _confirmDelete() async {
     var response = await showAlertDialog(
-        context: context,
-        title: 'Confirmación',
-        message: '¿Estás seguro de querer borrar el registro?',
-        actions: <AlertDialogAction>[
-          AlertDialogAction(key: 'no', label: 'No'),
-          AlertDialogAction(key: 'yes', label: 'Sí'),
-        ]);
+      context: context,
+      title: 'Confirmación',
+      message: '¿Estás seguro de querer borrar el registro?',
+      actions: <AlertDialogAction>[
+        AlertDialogAction(key: 'no', label: 'No'),
+        AlertDialogAction(key: 'yes', label: 'Sí'),
+      ],
+    );
     if (response == 'yes') {
       _deleteRecord();
     }
@@ -471,7 +487,10 @@ class _DetailScreenState extends State<DetailScreen> {
     });
 
     Response response = await ApiHelper.delete(
-        '/api/Details/', widget.detail.id.toString(), widget.token);
+      '/api/Details/',
+      widget.detail.id.toString(),
+      widget.token,
+    );
 
     setState(() {
       _showLoader = false;
@@ -479,12 +498,13 @@ class _DetailScreenState extends State<DetailScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
     Navigator.pop(context, 'yes');

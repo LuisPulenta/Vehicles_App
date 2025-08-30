@@ -1,5 +1,5 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:vehicles_app/components/loader_component.dart';
 import 'package:vehicles_app/helpers/api_helper.dart';
@@ -37,26 +37,23 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Cambio de Contraseña'),
-        ),
-        body: Stack(
-          children: [
-            Column(
-              children: <Widget>[
-                _showCurrentPassword(),
-                _showNewPassword(),
-                _showConfirmPassword(),
-                _showButtons(),
-              ],
-            ),
-            _showLoader
-                ? LoaderComponent(
-                    text: 'Por favor espere...',
-                  )
-                : Container(),
-          ],
-        ));
+      appBar: AppBar(title: Text('Cambio de Contraseña')),
+      body: Stack(
+        children: [
+          Column(
+            children: <Widget>[
+              _showCurrentPassword(),
+              _showNewPassword(),
+              _showConfirmPassword(),
+              _showButtons(),
+            ],
+          ),
+          _showLoader
+              ? LoaderComponent(text: 'Por favor espere...')
+              : Container(),
+        ],
+      ),
+    );
   }
 
   Widget _showCurrentPassword() {
@@ -151,9 +148,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       margin: EdgeInsets.only(left: 10, right: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          _showChangePassword(),
-        ],
+        children: <Widget>[_showChangePassword()],
       ),
     );
   }
@@ -165,15 +160,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.lock),
-            SizedBox(
-              width: 15,
-            ),
+            SizedBox(width: 15),
             Text('Cambiar contraseña'),
           ],
         ),
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.resolveWith<Color>(
-              (Set<MaterialState> states) {
+          backgroundColor: MaterialStateProperty.resolveWith<Color>((
+            Set<MaterialState> states,
+          ) {
             return Color(0xFF120E43);
           }),
         ),
@@ -246,12 +240,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estes conectado a internet.',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estes conectado a internet.',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -262,7 +257,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     };
 
     Response response = await ApiHelper.post(
-        '/api/Account/ChangePassword', request, widget.token);
+      '/api/Account/ChangePassword',
+      request,
+      widget.token,
+    );
 
     setState(() {
       _showLoader = false;
@@ -270,22 +268,24 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
     await showAlertDialog(
-        context: context,
-        title: 'Confirmación',
-        message: 'Su contraseña ha sido cambiada con éxito.',
-        actions: <AlertDialogAction>[
-          AlertDialogAction(key: null, label: 'Aceptar'),
-        ]);
+      context: context,
+      title: 'Confirmación',
+      message: 'Su contraseña ha sido cambiada con éxito.',
+      actions: <AlertDialogAction>[
+        AlertDialogAction(key: null, label: 'Aceptar'),
+      ],
+    );
 
     Navigator.pop(context, 'yes');
   }

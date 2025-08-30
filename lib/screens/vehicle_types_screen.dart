@@ -1,5 +1,5 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:vehicles_app/components/loader_component.dart';
@@ -42,8 +42,13 @@ class _vehicleTypesScreenState extends State<VehicleTypesScreen> {
         actions: <Widget>[
           _isFiltered
               ? IconButton(
-                  onPressed: _removeFilter, icon: Icon(Icons.filter_none))
-              : IconButton(onPressed: _showFilter, icon: Icon(Icons.filter_alt))
+                  onPressed: _removeFilter,
+                  icon: Icon(Icons.filter_none),
+                )
+              : IconButton(
+                  onPressed: _showFilter,
+                  icon: Icon(Icons.filter_alt),
+                ),
         ],
       ),
       body: Center(
@@ -70,12 +75,13 @@ class _vehicleTypesScreenState extends State<VehicleTypesScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -87,12 +93,13 @@ class _vehicleTypesScreenState extends State<VehicleTypesScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -136,16 +143,11 @@ class _vehicleTypesScreenState extends State<VehicleTypesScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          e.description,
-                          style: TextStyle(fontSize: 16),
-                        ),
+                        Text(e.description, style: TextStyle(fontSize: 16)),
                         Icon(Icons.arrow_forward_ios),
                       ],
                     ),
-                    SizedBox(
-                      height: 5,
-                    ),
+                    SizedBox(height: 5),
                   ],
                 ),
               ),
@@ -158,39 +160,44 @@ class _vehicleTypesScreenState extends State<VehicleTypesScreen> {
 
   void _showFilter() {
     showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            title: Text('Filtrar Tipos de Vehículo'),
-            content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: Text('Filtrar Tipos de Vehículo'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
               Text('Escriba las primeras letras del Tipo de Vehículo'),
-              SizedBox(
-                height: 10,
-              ),
+              SizedBox(height: 10),
               TextField(
                 autofocus: true,
                 decoration: InputDecoration(
-                    hintText: 'Criterio de búsqueda...',
-                    labelText: 'Buscar',
-                    suffixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10))),
+                  hintText: 'Criterio de búsqueda...',
+                  labelText: 'Buscar',
+                  suffixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
                 onChanged: (value) {
                   _search = value;
                 },
               ),
-            ]),
-            actions: <Widget>[
-              TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text('Cancelar')),
-              TextButton(onPressed: () => _filter(), child: Text('Filtrar')),
             ],
-          );
-        });
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Cancelar'),
+            ),
+            TextButton(onPressed: () => _filter(), child: Text('Filtrar')),
+          ],
+        );
+      },
+    );
   }
 
   void _removeFilter() {
@@ -206,9 +213,9 @@ class _vehicleTypesScreenState extends State<VehicleTypesScreen> {
     }
     List<VehicleType> filteredList = [];
     for (var vehicleType in _vehicleTypes) {
-      if (vehicleType.description
-          .toLowerCase()
-          .contains(_search.toLowerCase())) {
+      if (vehicleType.description.toLowerCase().contains(
+        _search.toLowerCase(),
+      )) {
         filteredList.add(vehicleType);
       }
     }
@@ -223,11 +230,14 @@ class _vehicleTypesScreenState extends State<VehicleTypesScreen> {
 
   void _goAdd() async {
     String? result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => VehicleTypeScreen(
-                token: widget.token,
-                vehicleType: VehicleType(description: '', id: 0))));
+      context,
+      MaterialPageRoute(
+        builder: (context) => VehicleTypeScreen(
+          token: widget.token,
+          vehicleType: VehicleType(description: '', id: 0),
+        ),
+      ),
+    );
     if (result == 'yes') {
       _getvehicleTypes();
     }
@@ -235,10 +245,12 @@ class _vehicleTypesScreenState extends State<VehicleTypesScreen> {
 
   void _goEdit(VehicleType vehicleType) async {
     String? result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => VehicleTypeScreen(
-                token: widget.token, vehicleType: vehicleType)));
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            VehicleTypeScreen(token: widget.token, vehicleType: vehicleType),
+      ),
+    );
     if (result == 'yes') {
       _getvehicleTypes();
     }

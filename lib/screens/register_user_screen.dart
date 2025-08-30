@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:camera/camera.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -82,35 +82,32 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Nuevo Usuario'),
-        ),
-        body: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  _showPhoto(),
-                  _showFirstName(),
-                  _showLastName(),
-                  _showDocumentType(),
-                  _showDocument(),
-                  _showAddress(),
-                  _showEmail(),
-                  _showPhoneNumber(),
-                  _showPassword(),
-                  _showConfirm(),
-                  _showButtons(),
-                ],
-              ),
+      appBar: AppBar(title: Text('Nuevo Usuario')),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                _showPhoto(),
+                _showFirstName(),
+                _showLastName(),
+                _showDocumentType(),
+                _showDocument(),
+                _showAddress(),
+                _showEmail(),
+                _showPhoneNumber(),
+                _showPassword(),
+                _showConfirm(),
+                _showButtons(),
+              ],
             ),
-            _showLoader
-                ? LoaderComponent(
-                    text: 'Por favor espere...',
-                  )
-                : Container(),
-          ],
-        ));
+          ),
+          _showLoader
+              ? LoaderComponent(text: 'Por favor espere...')
+              : Container(),
+        ],
+      ),
+    );
   }
 
   Future<Null> _getDocumentTypes() async {
@@ -125,12 +122,13 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -142,12 +140,13 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -158,16 +157,20 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
 
   List<DropdownMenuItem<int>> _getComboDocumentTypes() {
     List<DropdownMenuItem<int>> list = [];
-    list.add(DropdownMenuItem(
-      child: Text('Seleccione un Tipo de Documento...'),
-      value: 0,
-    ));
+    list.add(
+      DropdownMenuItem(
+        child: Text('Seleccione un Tipo de Documento...'),
+        value: 0,
+      ),
+    );
 
     _documentTypes.forEach((documentType) {
-      list.add(DropdownMenuItem(
-        child: Text(documentType.description),
-        value: documentType.id,
-      ));
+      list.add(
+        DropdownMenuItem(
+          child: Text(documentType.description),
+          value: documentType.id,
+        ),
+      );
     });
 
     return list;
@@ -175,25 +178,28 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
 
   Widget _showPhoto() {
     return InkWell(
-      child: Stack(children: <Widget>[
-        Container(
-          margin: EdgeInsets.only(top: 10),
-          child: !_photoChanged
-              ? Image(
-                  image: AssetImage('assets/noimage.png'),
-                  width: 160,
-                  height: 160,
-                  fit: BoxFit.cover)
-              : ClipRRect(
-                  borderRadius: BorderRadius.circular(80),
-                  child: Image.file(
-                    File(_image.path),
+      child: Stack(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(top: 10),
+            child: !_photoChanged
+                ? Image(
+                    image: AssetImage('assets/noimage.png'),
                     width: 160,
                     height: 160,
                     fit: BoxFit.cover,
-                  )),
-        ),
-        Positioned(
+                  )
+                : ClipRRect(
+                    borderRadius: BorderRadius.circular(80),
+                    child: Image.file(
+                      File(_image.path),
+                      width: 160,
+                      height: 160,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+          ),
+          Positioned(
             bottom: 0,
             left: 100,
             child: InkWell(
@@ -204,15 +210,12 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                   color: Colors.green[50],
                   height: 60,
                   width: 60,
-                  child: Icon(
-                    Icons.photo_camera,
-                    size: 40,
-                    color: Colors.blue,
-                  ),
+                  child: Icon(Icons.photo_camera, size: 40, color: Colors.blue),
                 ),
               ),
-            )),
-        Positioned(
+            ),
+          ),
+          Positioned(
             bottom: 0,
             left: 0,
             child: InkWell(
@@ -223,15 +226,13 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                   color: Colors.green[50],
                   height: 60,
                   width: 60,
-                  child: Icon(
-                    Icons.image,
-                    size: 40,
-                    color: Colors.blue,
-                  ),
+                  child: Icon(Icons.image, size: 40, color: Colors.blue),
                 ),
               ),
-            )),
-      ]),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -241,12 +242,12 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
       child: TextField(
         controller: _firstNameController,
         decoration: InputDecoration(
-            hintText: 'Ingresa nombres...',
-            labelText: 'Nombres',
-            errorText: _firstNameShowError ? _firstNameError : null,
-            suffixIcon: Icon(Icons.person),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+          hintText: 'Ingresa nombres...',
+          labelText: 'Nombres',
+          errorText: _firstNameShowError ? _firstNameError : null,
+          suffixIcon: Icon(Icons.person),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         onChanged: (value) {
           _firstName = value;
         },
@@ -260,12 +261,12 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
       child: TextField(
         controller: _lastNameController,
         decoration: InputDecoration(
-            hintText: 'Ingresa nombres...',
-            labelText: 'Apellido',
-            errorText: _lastNameShowError ? _lastNameError : null,
-            suffixIcon: Icon(Icons.person),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+          hintText: 'Ingresa nombres...',
+          labelText: 'Apellido',
+          errorText: _lastNameShowError ? _lastNameError : null,
+          suffixIcon: Icon(Icons.person),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         onChanged: (value) {
           _lastName = value;
         },
@@ -289,11 +290,14 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
               decoration: InputDecoration(
                 hintText: 'Seleccione un tipo de documento...',
                 labelText: 'Tipo de Documento',
-                errorText:
-                    _documentTypeIdShowError ? _documentTypeIdError : null,
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-              )),
+                errorText: _documentTypeIdShowError
+                    ? _documentTypeIdError
+                    : null,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
     );
   }
 
@@ -303,12 +307,12 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
       child: TextField(
         controller: _documentController,
         decoration: InputDecoration(
-            hintText: 'Ingresa documento...',
-            labelText: 'Documento',
-            errorText: _documentShowError ? _documentError : null,
-            suffixIcon: Icon(Icons.assignment_ind),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+          hintText: 'Ingresa documento...',
+          labelText: 'Documento',
+          errorText: _documentShowError ? _documentError : null,
+          suffixIcon: Icon(Icons.assignment_ind),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         onChanged: (value) {
           _document = value;
         },
@@ -323,12 +327,12 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
         controller: _addressController,
         keyboardType: TextInputType.streetAddress,
         decoration: InputDecoration(
-            hintText: 'Ingresa dirección...',
-            labelText: 'Dirección',
-            errorText: _addressShowError ? _addressError : null,
-            suffixIcon: Icon(Icons.home),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+          hintText: 'Ingresa dirección...',
+          labelText: 'Dirección',
+          errorText: _addressShowError ? _addressError : null,
+          suffixIcon: Icon(Icons.home),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         onChanged: (value) {
           _address = value;
         },
@@ -343,12 +347,12 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
         controller: _emailController,
         keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(
-            hintText: 'Ingresa Email...',
-            labelText: 'Email',
-            errorText: _emailShowError ? _emailError : null,
-            suffixIcon: Icon(Icons.email),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+          hintText: 'Ingresa Email...',
+          labelText: 'Email',
+          errorText: _emailShowError ? _emailError : null,
+          suffixIcon: Icon(Icons.email),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         onChanged: (value) {
           _email = value;
         },
@@ -363,12 +367,12 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
         controller: _phoneNumberController,
         keyboardType: TextInputType.phone,
         decoration: InputDecoration(
-            hintText: 'Ingresa Teléfono...',
-            labelText: 'Teléfono',
-            errorText: _phoneNumberShowError ? _phoneNumberError : null,
-            suffixIcon: Icon(Icons.phone),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+          hintText: 'Ingresa Teléfono...',
+          labelText: 'Teléfono',
+          errorText: _phoneNumberShowError ? _phoneNumberError : null,
+          suffixIcon: Icon(Icons.phone),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         onChanged: (value) {
           _phoneNumber = value;
         },
@@ -439,9 +443,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
       margin: EdgeInsets.only(left: 10, right: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          _showRegisterButton(),
-        ],
+        children: <Widget>[_showRegisterButton()],
       ),
     );
   }
@@ -451,11 +453,11 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     final cameras = await availableCameras();
     final firstCamera = cameras.first;
     Response? response = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => TakePictureScreen(
-                  camera: firstCamera,
-                )));
+      context,
+      MaterialPageRoute(
+        builder: (context) => TakePictureScreen(camera: firstCamera),
+      ),
+    );
     if (response != null) {
       setState(() {
         _photoChanged = true;
@@ -482,15 +484,14 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.person_add),
-            SizedBox(
-              width: 15,
-            ),
+            SizedBox(width: 15),
             Text('Registrar usuario'),
           ],
         ),
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.resolveWith<Color>(
-              (Set<MaterialState> states) {
+          backgroundColor: MaterialStateProperty.resolveWith<Color>((
+            Set<MaterialState> states,
+          ) {
             return Color(0xFF120E43);
           }),
         ),
@@ -626,12 +627,13 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -662,23 +664,25 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
     await showAlertDialog(
-        context: context,
-        title: 'Confirmación',
-        message:
-            'Se ha enviado un correo con las instrucciones para activar el usuario. Por favor actívelo para poder ingresar a la Aplicación.',
-        actions: <AlertDialogAction>[
-          AlertDialogAction(key: null, label: 'Aceptar'),
-        ]);
+      context: context,
+      title: 'Confirmación',
+      message:
+          'Se ha enviado un correo con las instrucciones para activar el usuario. Por favor actívelo para poder ingresar a la Aplicación.',
+      actions: <AlertDialogAction>[
+        AlertDialogAction(key: null, label: 'Aceptar'),
+      ],
+    );
     return;
 
     Navigator.pop(context, 'yes');

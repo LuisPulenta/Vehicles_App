@@ -1,6 +1,6 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -24,12 +24,13 @@ class HistoryInfoScreen extends StatefulWidget {
   final History history;
   final bool isAdmin;
 
-  HistoryInfoScreen(
-      {required this.token,
-      required this.user,
-      required this.vehicle,
-      required this.history,
-      required this.isAdmin});
+  HistoryInfoScreen({
+    required this.token,
+    required this.user,
+    required this.vehicle,
+    required this.history,
+    required this.isAdmin,
+  });
 
   @override
   _HistoryInfoScreenState createState() => _HistoryInfoScreenState();
@@ -53,25 +54,27 @@ class _HistoryInfoScreenState extends State<HistoryInfoScreen> {
       backgroundColor: Color(0xFFE4D359),
       appBar: AppBar(
         title: Text(
-            '${widget.vehicle.brand.description} ${widget.vehicle.line} ${widget.vehicle.plaque}'),
+          '${widget.vehicle.brand.description} ${widget.vehicle.line} ${widget.vehicle.plaque}',
+        ),
       ),
       body: Center(
         child: _showLoader
-            ? LoaderComponent(
-                text: 'Por favor espere...',
-              )
+            ? LoaderComponent(text: 'Por favor espere...')
             : _getContent(),
       ),
       floatingActionButton: widget.isAdmin
           ? FloatingActionButton(
               child: Icon(Icons.add),
-              onPressed: () => _goDetail(Detail(
+              onPressed: () => _goDetail(
+                Detail(
                   id: 0,
                   procedure: Procedure(id: 0, description: '', price: 0),
                   laborPrice: 0,
                   sparePartsPrice: 0,
                   totalPrice: 0,
-                  remarks: '')),
+                  remarks: '',
+                ),
+              ),
             )
           : Container(),
     );
@@ -94,15 +97,17 @@ class _HistoryInfoScreenState extends State<HistoryInfoScreen> {
     }
 
     String? result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => DetailScreen(
-                  token: widget.token,
-                  user: widget.user,
-                  vehicle: widget.vehicle,
-                  history: widget.history,
-                  detail: detail,
-                )));
+      context,
+      MaterialPageRoute(
+        builder: (context) => DetailScreen(
+          token: widget.token,
+          user: widget.user,
+          vehicle: widget.vehicle,
+          history: widget.history,
+          detail: detail,
+        ),
+      ),
+    );
     if (result == 'yes') {
       await _getHistory();
     }
@@ -119,17 +124,20 @@ class _HistoryInfoScreenState extends State<HistoryInfoScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estes conectado a internet.',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estes conectado a internet.',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
-    Response response =
-        await ApiHelper.getHistory(widget.token, widget.history.id.toString());
+    Response response = await ApiHelper.getHistory(
+      widget.token,
+      widget.history.id.toString(),
+    );
 
     setState(() {
       _showLoader = false;
@@ -137,12 +145,13 @@ class _HistoryInfoScreenState extends State<HistoryInfoScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -178,24 +187,21 @@ class _HistoryInfoScreenState extends State<HistoryInfoScreen> {
                     ),
                   ),
                   Positioned(
-                      bottom: 0,
-                      left: 100,
-                      child: InkWell(
-                        onTap: () => _goEditVehicle(),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(30),
-                          child: Container(
-                            color: Colors.green[50],
-                            height: 40,
-                            width: 40,
-                            child: Icon(
-                              Icons.edit,
-                              size: 30,
-                              color: Colors.blue,
-                            ),
-                          ),
+                    bottom: 0,
+                    left: 100,
+                    child: InkWell(
+                      onTap: () => _goEditVehicle(),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(30),
+                        child: Container(
+                          color: Colors.green[50],
+                          height: 40,
+                          width: 40,
+                          child: Icon(Icons.edit, size: 30, color: Colors.blue),
                         ),
-                      ))
+                      ),
+                    ),
+                  ),
                 ],
               ),
               Expanded(
@@ -212,130 +218,124 @@ class _HistoryInfoScreenState extends State<HistoryInfoScreen> {
                               children: <Widget>[
                                 Row(
                                   children: <Widget>[
-                                    Text('Tipo de vehículo: ',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
+                                    Text(
+                                      'Tipo de vehículo: ',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                     Text(
                                       _vehicle.vehicleType.description,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                      ),
+                                      style: TextStyle(fontSize: 14),
                                     ),
                                   ],
                                 ),
-                                SizedBox(
-                                  height: 5,
-                                ),
+                                SizedBox(height: 5),
                                 Row(
                                   children: <Widget>[
-                                    Text('Marca: ',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
+                                    Text(
+                                      'Marca: ',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                     Text(
                                       _vehicle.brand.description,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                      ),
+                                      style: TextStyle(fontSize: 14),
                                     ),
                                   ],
                                 ),
-                                SizedBox(
-                                  height: 5,
-                                ),
+                                SizedBox(height: 5),
                                 Row(
                                   children: <Widget>[
-                                    Text('Modelo: ',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
+                                    Text(
+                                      'Modelo: ',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                     Text(
                                       _vehicle.model.toString(),
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                      ),
+                                      style: TextStyle(fontSize: 14),
                                     ),
                                   ],
                                 ),
-                                SizedBox(
-                                  height: 5,
-                                ),
+                                SizedBox(height: 5),
                                 Row(
                                   children: <Widget>[
-                                    Text('Placa: ',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
+                                    Text(
+                                      'Placa: ',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                     Text(
                                       _vehicle.plaque,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                      ),
+                                      style: TextStyle(fontSize: 14),
                                     ),
                                   ],
                                 ),
-                                SizedBox(
-                                  height: 5,
-                                ),
+                                SizedBox(height: 5),
                                 Row(
                                   children: <Widget>[
-                                    Text('Línea: ',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
+                                    Text(
+                                      'Línea: ',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                     Text(
                                       _vehicle.line,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                      ),
+                                      style: TextStyle(fontSize: 14),
                                     ),
                                   ],
                                 ),
-                                SizedBox(
-                                  height: 5,
-                                ),
+                                SizedBox(height: 5),
                                 Row(
                                   children: <Widget>[
-                                    Text('Color: ',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
+                                    Text(
+                                      'Color: ',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                     Text(
                                       _vehicle.color,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                      ),
+                                      style: TextStyle(fontSize: 14),
                                     ),
                                   ],
                                 ),
-                                SizedBox(
-                                  height: 5,
-                                ),
+                                SizedBox(height: 5),
                                 Row(
                                   children: <Widget>[
-                                    Text('Comentarios: ',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
+                                    Text(
+                                      'Comentarios: ',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                     Expanded(
                                       child: Text(
                                         _vehicle.remarks == null
                                             ? 'NA'
                                             : widget.vehicle.remarks!,
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                        ),
+                                        style: TextStyle(fontSize: 14),
                                       ),
                                     ),
                                   ],
                                 ),
-                                SizedBox(
-                                  height: 5,
-                                ),
+                                SizedBox(height: 5),
                                 Row(
                                   children: <Widget>[
-                                    Text('N° de Historias: ',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
+                                    Text(
+                                      'N° de Historias: ',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                     Text(
                                       _vehicle.historiesCount.toString(),
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                      ),
+                                      style: TextStyle(fontSize: 14),
                                     ),
                                   ],
                                 ),
@@ -354,85 +354,70 @@ class _HistoryInfoScreenState extends State<HistoryInfoScreen> {
             children: [
               Column(
                 children: <Widget>[
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Divider(
-                    color: Colors.black,
-                    height: 2,
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
+                  SizedBox(height: 5),
+                  Divider(color: Colors.black, height: 2),
+                  SizedBox(height: 5),
                   Row(
                     children: <Widget>[
-                      Text('Descripción: ',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(
+                        'Descripción: ',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       Text(
                         _history.remarks == null ? 'NA' : _history.remarks!,
-                        style: TextStyle(
-                          fontSize: 14,
-                        ),
+                        style: TextStyle(fontSize: 14),
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 5,
-                  ),
+                  SizedBox(height: 5),
                   Row(
                     children: <Widget>[
-                      Text('Kilometraje: ',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(
+                        'Kilometraje: ',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       Text(
                         _history.mileage.toString(),
-                        style: TextStyle(
-                          fontSize: 14,
-                        ),
+                        style: TextStyle(fontSize: 14),
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 5,
-                  ),
+                  SizedBox(height: 5),
                   Row(
                     children: <Widget>[
-                      Text('Valor Repuestos: ',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(
+                        'Valor Repuestos: ',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       Text(
                         '${NumberFormat.currency(symbol: '\$').format(_history.totalSpareParts)}',
-                        style: TextStyle(
-                          fontSize: 14,
-                        ),
+                        style: TextStyle(fontSize: 14),
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 5,
-                  ),
+                  SizedBox(height: 5),
                   Row(
                     children: <Widget>[
-                      Text('Valor Mano Obra: ',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(
+                        'Valor Mano Obra: ',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       Text(
                         '${NumberFormat.currency(symbol: '\$').format(_history.totalLabor)}',
-                        style: TextStyle(
-                          fontSize: 14,
-                        ),
+                        style: TextStyle(fontSize: 14),
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 5,
-                  ),
+                  SizedBox(height: 5),
                   Row(
                     children: <Widget>[
-                      Text('Valor Total: ',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(
+                        'Valor Total: ',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       Text(
                         '${NumberFormat.currency(symbol: '\$').format(_history.total)}',
-                        style: TextStyle(
-                          fontSize: 14,
-                        ),
+                        style: TextStyle(fontSize: 14),
                       ),
                     ],
                   ),
@@ -457,8 +442,9 @@ class _HistoryInfoScreenState extends State<HistoryInfoScreen> {
                             ),
                           ),
                         ),
-                      ))
-                  : Container()
+                      ),
+                    )
+                  : Container(),
             ],
           ),
         ],
@@ -482,76 +468,67 @@ class _HistoryInfoScreenState extends State<HistoryInfoScreen> {
               child: Row(
                 children: <Widget>[
                   Expanded(
-                      child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Row(
-                                children: [
-                                  Text(
-                                    e.procedure.description,
-                                    style: TextStyle(
+                    child: Container(
+                      margin: EdgeInsets.symmetric(horizontal: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Expanded(
+                            child: Column(
+                              children: <Widget>[
+                                Row(
+                                  children: [
+                                    Text(
+                                      e.procedure.description,
+                                      style: TextStyle(
                                         fontSize: 14,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    e.remarks == null ? 'NA' : e.remarks!,
-                                    style: TextStyle(
-                                      fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    'Mano de obra: ${NumberFormat.currency(symbol: '\$').format(e.laborPrice)}',
-                                    style: TextStyle(
-                                      fontSize: 14,
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      e.remarks == null ? 'NA' : e.remarks!,
+                                      style: TextStyle(fontSize: 14),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    'Repuestos: ${NumberFormat.currency(symbol: '\$').format(e.sparePartsPrice)}',
-                                    style: TextStyle(
-                                      fontSize: 14,
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Mano de obra: ${NumberFormat.currency(symbol: '\$').format(e.laborPrice)}',
+                                      style: TextStyle(fontSize: 14),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    'Total: ${NumberFormat.currency(symbol: '\$').format(e.totalPrice)}',
-                                    style: TextStyle(
-                                      fontSize: 14,
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Repuestos: ${NumberFormat.currency(symbol: '\$').format(e.sparePartsPrice)}',
+                                      style: TextStyle(fontSize: 14),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Total: ${NumberFormat.currency(symbol: '\$').format(e.totalPrice)}',
+                                      style: TextStyle(fontSize: 14),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  )),
+                  ),
                   widget.isAdmin
-                      ? Icon(
-                          Icons.arrow_forward_ios,
-                          size: 40,
-                        )
-                      : Container()
+                      ? Icon(Icons.arrow_forward_ios, size: 40)
+                      : Container(),
                 ],
               ),
             ),
@@ -567,10 +544,7 @@ class _HistoryInfoScreenState extends State<HistoryInfoScreen> {
         margin: EdgeInsets.all(20),
         child: Text(
           'La historia no tiene detalles registrados.',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -578,14 +552,16 @@ class _HistoryInfoScreenState extends State<HistoryInfoScreen> {
 
   void _goEditHistory() async {
     String? result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => HistoryScreen(
-                  token: widget.token,
-                  user: widget.user,
-                  vehicle: widget.vehicle,
-                  history: _history,
-                )));
+      context,
+      MaterialPageRoute(
+        builder: (context) => HistoryScreen(
+          token: widget.token,
+          user: widget.user,
+          vehicle: widget.vehicle,
+          history: _history,
+        ),
+      ),
+    );
     if (result == 'yes') {
       await _getHistory();
     }
@@ -593,13 +569,15 @@ class _HistoryInfoScreenState extends State<HistoryInfoScreen> {
 
   void _goEditVehicle() async {
     String? result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => VehicleScreen(
-                  token: widget.token,
-                  user: widget.user,
-                  vehicle: widget.vehicle,
-                )));
+      context,
+      MaterialPageRoute(
+        builder: (context) => VehicleScreen(
+          token: widget.token,
+          user: widget.user,
+          vehicle: widget.vehicle,
+        ),
+      ),
+    );
     if (result == 'yes') {
       await _getVehicle();
     }
@@ -616,17 +594,20 @@ class _HistoryInfoScreenState extends State<HistoryInfoScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estes conectado a internet.',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estes conectado a internet.',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
-    Response response =
-        await ApiHelper.getVehicle(widget.token, _vehicle.id.toString());
+    Response response = await ApiHelper.getVehicle(
+      widget.token,
+      _vehicle.id.toString(),
+    );
 
     setState(() {
       _showLoader = false;
@@ -634,12 +615,13 @@ class _HistoryInfoScreenState extends State<HistoryInfoScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 

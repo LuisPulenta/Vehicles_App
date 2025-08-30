@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 
@@ -41,9 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFE4D359),
-      appBar: AppBar(
-        title: Text('Login'),
-      ),
+      appBar: AppBar(title: Text('Login')),
       body: Stack(
         children: <Widget>[
           Center(
@@ -51,13 +49,9 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: 10),
                   _showLogo(),
-                  SizedBox(
-                    height: 40,
-                  ),
+                  SizedBox(height: 40),
                   _showEmail(),
                   _showPassword(),
                   _showRememberme(),
@@ -68,9 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           _showLoader
-              ? LoaderComponent(
-                  text: 'Por favor espere...',
-                )
+              ? LoaderComponent(text: 'Por favor espere...')
               : Container(),
         ],
       ),
@@ -91,15 +83,15 @@ class _LoginScreenState extends State<LoginScreen> {
       child: TextField(
         keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(
-            fillColor: Colors.white,
-            filled: true,
-            hintText: 'Ingresa tu Email...',
-            labelText: 'Email',
-            errorText: _emailShowError ? _emailError : null,
-            prefixIcon: Icon(Icons.alternate_email),
-            suffixIcon: Icon(Icons.email),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+          fillColor: Colors.white,
+          filled: true,
+          hintText: 'Ingresa tu Email...',
+          labelText: 'Email',
+          errorText: _emailShowError ? _emailError : null,
+          prefixIcon: Icon(Icons.alternate_email),
+          suffixIcon: Icon(Icons.email),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         onChanged: (value) {
           _email = value;
           print(_email);
@@ -114,24 +106,24 @@ class _LoginScreenState extends State<LoginScreen> {
       child: TextField(
         obscureText: !_passwordShow,
         decoration: InputDecoration(
-            fillColor: Colors.white,
-            filled: true,
-            hintText: 'Ingresa tu Contraseña...',
-            labelText: 'Contraseña',
-            errorText: _passwordShowError ? _passwordError : null,
-            prefixIcon: Icon(Icons.lock),
-            suffixIcon: IconButton(
-              icon: _passwordShow
-                  ? Icon(Icons.visibility)
-                  : Icon(Icons.visibility_off),
-              onPressed: () {
-                setState(() {
-                  _passwordShow = !_passwordShow;
-                });
-              },
-            ),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+          fillColor: Colors.white,
+          filled: true,
+          hintText: 'Ingresa tu Contraseña...',
+          labelText: 'Contraseña',
+          errorText: _passwordShowError ? _passwordError : null,
+          prefixIcon: Icon(Icons.lock),
+          suffixIcon: IconButton(
+            icon: _passwordShow
+                ? Icon(Icons.visibility)
+                : Icon(Icons.visibility_off),
+            onPressed: () {
+              setState(() {
+                _passwordShow = !_passwordShow;
+              });
+            },
+          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         onChanged: (value) {
           _password = value;
         },
@@ -160,9 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               _showLoginButton(),
-              SizedBox(
-                width: 20,
-              ),
+              SizedBox(width: 20),
               _showRegisterButton(),
             ],
           ),
@@ -191,19 +181,17 @@ class _LoginScreenState extends State<LoginScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
-    Map<String, dynamic> request = {
-      'userName': _email,
-      'password': _password,
-    };
+    Map<String, dynamic> request = {'userName': _email, 'password': _password};
 
     var url = Uri.parse('${Constants.apiUrl}/api/Account/CreateToken');
     var response = await http.post(
@@ -238,11 +226,9 @@ class _LoginScreenState extends State<LoginScreen> {
     var token = Token.fromJson(decodedJson);
 
     Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => HomeScreen(
-                  token: token,
-                )));
+      context,
+      MaterialPageRoute(builder: (context) => HomeScreen(token: token)),
+    );
   }
 
   bool validateFields() {
@@ -282,14 +268,12 @@ class _LoginScreenState extends State<LoginScreen> {
       child: ElevatedButton(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Icon(Icons.login),
-            Text('Iniciar sesión'),
-          ],
+          children: [Icon(Icons.login), Text('Iniciar sesión')],
         ),
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.resolveWith<Color>(
-              (Set<MaterialState> states) {
+          backgroundColor: MaterialStateProperty.resolveWith<Color>((
+            Set<MaterialState> states,
+          ) {
             return Color(0xFF120E43);
           }),
         ),
@@ -303,14 +287,12 @@ class _LoginScreenState extends State<LoginScreen> {
       child: ElevatedButton(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Icon(Icons.person_add),
-            Text('Nuevo usuario'),
-          ],
+          children: [Icon(Icons.person_add), Text('Nuevo usuario')],
         ),
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.resolveWith<Color>(
-              (Set<MaterialState> states) {
+          backgroundColor: MaterialStateProperty.resolveWith<Color>((
+            Set<MaterialState> states,
+          ) {
             return Colors.purple;
           }),
         ),
@@ -321,7 +303,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _register() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => RegisterUserScreen()));
+      context,
+      MaterialPageRoute(builder: (context) => RegisterUserScreen()),
+    );
   }
 
   void _storeUser(String body) async {
@@ -344,7 +328,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _goForgotPassword() {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => RecoverPasswordScreen()));
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => RecoverPasswordScreen()),
+    );
   }
 }

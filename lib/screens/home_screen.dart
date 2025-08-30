@@ -1,6 +1,6 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -44,9 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFE4D359),
-      appBar: AppBar(
-        title: Text('Vehicles'),
-      ),
+      appBar: AppBar(title: Text('Vehicles')),
       body: _getBody(),
       drawer: _user.userType == 0 ? _getMechanicMenu() : _getCustomerMenu(),
     );
@@ -59,47 +57,37 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image(
-              image: AssetImage('assets/logo.png'),
-              width: 250,
-            ),
-            SizedBox(
-              height: 40,
-            ),
+            Image(image: AssetImage('assets/logo.png'), width: 250),
+            SizedBox(height: 40),
             ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: CachedNetworkImage(
-                  imageUrl: _user.imageFullPath,
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+              borderRadius: BorderRadius.circular(100),
+              child: CachedNetworkImage(
+                imageUrl: _user.imageFullPath,
+                errorWidget: (context, url, error) => Icon(Icons.error),
+                fit: BoxFit.cover,
+                height: 200,
+                width: 200,
+                placeholder: (context, url) => Image(
+                  image: AssetImage('assets/logo.png'),
                   fit: BoxFit.cover,
                   height: 200,
                   width: 200,
-                  placeholder: (context, url) => Image(
-                    image: AssetImage('assets/logo.png'),
-                    fit: BoxFit.cover,
-                    height: 200,
-                    width: 200,
-                  ),
-                )),
-            SizedBox(
-              height: 30,
+                ),
+              ),
             ),
+            SizedBox(height: 30),
             Center(
               child: Text(
                 'Bienvenido/a ${_user.fullName}',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
-            SizedBox(
-              height: 10,
-            ),
+            SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text('Llamar al taller'),
-                SizedBox(
-                  width: 10,
-                ),
+                SizedBox(width: 10),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: Container(
@@ -107,26 +95,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     width: 40,
                     color: Colors.blue,
                     child: IconButton(
-                      icon: Icon(
-                        Icons.call,
-                        color: Colors.white,
-                      ),
+                      icon: Icon(Icons.call, color: Colors.white),
                       onPressed: () => launch("tel://3516814963"),
                     ),
                   ),
-                )
+                ),
               ],
             ),
-            SizedBox(
-              height: 10,
-            ),
+            SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text('Enviar mensaje al taller'),
-                SizedBox(
-                  width: 10,
-                ),
+                SizedBox(width: 10),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: Container(
@@ -134,14 +115,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     width: 40,
                     color: Colors.green,
                     child: IconButton(
-                      icon: Icon(
-                        Icons.insert_comment,
-                        color: Colors.white,
-                      ),
+                      icon: Icon(Icons.insert_comment, color: Colors.white),
                       onPressed: () => _sendMessage(),
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ],
@@ -161,11 +139,11 @@ class _HomeScreenState extends State<HomeScreen> {
             title: Text('Marcas'),
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => BrandsScreen(
-                            token: widget.token,
-                          )));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BrandsScreen(token: widget.token),
+                ),
+              );
             },
           ),
           ListTile(
@@ -173,11 +151,11 @@ class _HomeScreenState extends State<HomeScreen> {
             title: Text('Procedimientos'),
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ProceduresScreen(
-                            token: widget.token,
-                          )));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProceduresScreen(token: widget.token),
+                ),
+              );
             },
           ),
           ListTile(
@@ -185,11 +163,12 @@ class _HomeScreenState extends State<HomeScreen> {
             title: Text('Tipos de Documento'),
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => DocumentTypesScreen(
-                            token: widget.token,
-                          )));
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      DocumentTypesScreen(token: widget.token),
+                ),
+              );
             },
           ),
           ListTile(
@@ -197,11 +176,11 @@ class _HomeScreenState extends State<HomeScreen> {
             title: Text('Tipos de Vehículo'),
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => VehicleTypesScreen(
-                            token: widget.token,
-                          )));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => VehicleTypesScreen(token: widget.token),
+                ),
+              );
             },
           ),
           ListTile(
@@ -209,29 +188,28 @@ class _HomeScreenState extends State<HomeScreen> {
             title: Text('Usuarios'),
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => UsersScreen(
-                            token: widget.token,
-                          )));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UsersScreen(token: widget.token),
+                ),
+              );
             },
           ),
-          Divider(
-            color: Colors.black,
-            height: 2,
-          ),
+          Divider(color: Colors.black, height: 2),
           ListTile(
             leading: Icon(Icons.face),
             title: Text('Editar perfil'),
             onTap: () async {
               String? result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => UserScreen(
-                            token: widget.token,
-                            user: _user,
-                            myProfile: true,
-                          )));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UserScreen(
+                    token: widget.token,
+                    user: _user,
+                    myProfile: true,
+                  ),
+                ),
+              );
               if (result == 'yes') {
                 _getUser();
               }
@@ -260,31 +238,32 @@ class _HomeScreenState extends State<HomeScreen> {
             title: Text('Mis Vehículos'),
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => UserInfoScreen(
-                            token: widget.token,
-                            user: widget.token.user,
-                            isAdmin: false,
-                          )));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UserInfoScreen(
+                    token: widget.token,
+                    user: widget.token.user,
+                    isAdmin: false,
+                  ),
+                ),
+              );
             },
           ),
-          Divider(
-            color: Colors.black,
-            height: 2,
-          ),
+          Divider(color: Colors.black, height: 2),
           ListTile(
             leading: Icon(Icons.face),
             title: Text('Editar perfil'),
             onTap: () async {
               String? result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => UserScreen(
-                            token: widget.token,
-                            user: _user,
-                            myProfile: true,
-                          )));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UserScreen(
+                    token: widget.token,
+                    user: _user,
+                    myProfile: true,
+                  ),
+                ),
+              );
               if (result == 'yes') {
                 _getUser();
               }
@@ -307,7 +286,9 @@ class _HomeScreenState extends State<HomeScreen> {
     await prefs.setBool('isRemembered', false);
     await prefs.setString('userBody', '');
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => LoginScreen()));
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
   }
 
   Future<Null> _getUser() async {
@@ -322,12 +303,13 @@ class _HomeScreenState extends State<HomeScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -339,12 +321,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
     setState(() {

@@ -1,5 +1,5 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:vehicles_app/components/loader_component.dart';
@@ -17,11 +17,12 @@ class HistoryScreen extends StatefulWidget {
   final Vehicle vehicle;
   final History history;
 
-  HistoryScreen(
-      {required this.token,
-      required this.user,
-      required this.vehicle,
-      required this.history});
+  HistoryScreen({
+    required this.token,
+    required this.user,
+    required this.vehicle,
+    required this.history,
+  });
 
   @override
   _HistoryScreenState createState() => _HistoryScreenState();
@@ -45,35 +46,32 @@ class _HistoryScreenState extends State<HistoryScreen> {
     super.initState();
     _remarks = widget.history.remarks!;
     _remarksController.text = _remarks;
-    _mileage =
-        widget.history.mileage == 0 ? '' : widget.history.mileage.toString();
+    _mileage = widget.history.mileage == 0
+        ? ''
+        : widget.history.mileage.toString();
     _mileageController.text = _mileage;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xFFFFFFCC),
-        appBar: AppBar(
-          title: Text(
-              widget.history.id == 0 ? 'Nueva Historia' : 'Editar Historia'),
+      backgroundColor: Color(0xFFFFFFCC),
+      appBar: AppBar(
+        title: Text(
+          widget.history.id == 0 ? 'Nueva Historia' : 'Editar Historia',
         ),
-        body: Stack(
-          children: [
-            Column(
-              children: <Widget>[
-                _showRemarks(),
-                _showMileage(),
-                _showButtons(),
-              ],
-            ),
-            _showLoader
-                ? LoaderComponent(
-                    text: 'Por favor espere...',
-                  )
-                : Container(),
-          ],
-        ));
+      ),
+      body: Stack(
+        children: [
+          Column(
+            children: <Widget>[_showRemarks(), _showMileage(), _showButtons()],
+          ),
+          _showLoader
+              ? LoaderComponent(text: 'Por favor espere...')
+              : Container(),
+        ],
+      ),
+    );
   }
 
   Widget _showRemarks() {
@@ -85,14 +83,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
         maxLines: 4,
         controller: _remarksController,
         decoration: InputDecoration(
-            fillColor: Colors.white,
-            filled: true,
-            hintText: 'Ingresa un Comentario...',
-            labelText: 'Comentario',
-            errorText: _remarksShowError ? _remarksError : null,
-            suffixIcon: Icon(Icons.description),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+          fillColor: Colors.white,
+          filled: true,
+          hintText: 'Ingresa un Comentario...',
+          labelText: 'Comentario',
+          errorText: _remarksShowError ? _remarksError : null,
+          suffixIcon: Icon(Icons.description),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         onChanged: (value) {
           _remarks = value;
         },
@@ -107,14 +105,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
         keyboardType: TextInputType.number,
         controller: _mileageController,
         decoration: InputDecoration(
-            fillColor: Colors.white,
-            filled: true,
-            hintText: 'Ingrese Kilometraje...',
-            labelText: 'Kilometraje',
-            errorText: _mileageShowError ? _mileageError : null,
-            suffixIcon: Icon(Icons.directions_car),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+          fillColor: Colors.white,
+          filled: true,
+          hintText: 'Ingrese Kilometraje...',
+          labelText: 'Kilometraje',
+          errorText: _mileageShowError ? _mileageError : null,
+          suffixIcon: Icon(Icons.directions_car),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         onChanged: (value) {
           _mileage = value;
         },
@@ -134,26 +132,21 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.save),
-                  SizedBox(
-                    width: 15,
-                  ),
+                  SizedBox(width: 15),
                   Text('Guardar'),
                 ],
               ),
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
+                backgroundColor: MaterialStateProperty.resolveWith<Color>((
+                  Set<MaterialState> states,
+                ) {
                   return Color(0xFF120E43);
                 }),
               ),
               onPressed: () => _save(),
             ),
           ),
-          widget.history.id == 0
-              ? Container()
-              : SizedBox(
-                  width: 20,
-                ),
+          widget.history.id == 0 ? Container() : SizedBox(width: 20),
           widget.history.id == 0
               ? Container()
               : Expanded(
@@ -162,17 +155,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.delete),
-                        SizedBox(
-                          width: 15,
-                        ),
+                        SizedBox(width: 15),
                         Text('Borrar'),
                       ],
                     ),
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                        return Color(0xFFB4161B);
-                      }),
+                        (Set<MaterialState> states) {
+                          return Color(0xFFB4161B);
+                        },
+                      ),
                     ),
                     onPressed: () => _confirmDelete(),
                   ),
@@ -232,12 +224,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -247,8 +240,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
       'remarks': _remarks,
     };
 
-    Response response =
-        await ApiHelper.post('/api/Histories/', request, widget.token);
+    Response response = await ApiHelper.post(
+      '/api/Histories/',
+      request,
+      widget.token,
+    );
 
     setState(() {
       _showLoader = false;
@@ -256,12 +252,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
     Navigator.pop(context, 'yes');
@@ -286,17 +283,22 @@ class _HistoryScreenState extends State<HistoryScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
     Response response = await ApiHelper.put(
-        '/api/Histories/', widget.history.id.toString(), request, widget.token);
+      '/api/Histories/',
+      widget.history.id.toString(),
+      request,
+      widget.token,
+    );
 
     setState(() {
       _showLoader = false;
@@ -304,12 +306,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
     Navigator.pop(context, 'yes');
@@ -317,13 +320,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   void _confirmDelete() async {
     var response = await showAlertDialog(
-        context: context,
-        title: 'Confirmación',
-        message: '¿Estás seguro de querer borrar el registro?',
-        actions: <AlertDialogAction>[
-          AlertDialogAction(key: 'no', label: 'No'),
-          AlertDialogAction(key: 'yes', label: 'Sí'),
-        ]);
+      context: context,
+      title: 'Confirmación',
+      message: '¿Estás seguro de querer borrar el registro?',
+      actions: <AlertDialogAction>[
+        AlertDialogAction(key: 'no', label: 'No'),
+        AlertDialogAction(key: 'yes', label: 'Sí'),
+      ],
+    );
     if (response == 'yes') {
       _deleteRecord();
     }
@@ -341,17 +345,21 @@ class _HistoryScreenState extends State<HistoryScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
     Response response = await ApiHelper.delete(
-        '/api/Histories/', widget.history.id.toString(), widget.token);
+      '/api/Histories/',
+      widget.history.id.toString(),
+      widget.token,
+    );
 
     setState(() {
       _showLoader = false;
@@ -359,12 +367,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
     Navigator.pop(context, 'yes');

@@ -1,5 +1,5 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:vehicles_app/components/loader_component.dart';
 import 'package:vehicles_app/helpers/api_helper.dart';
@@ -37,32 +37,28 @@ class _brandScreenState extends State<brandScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xFFE4D359),
-        appBar: AppBar(
-          title: Text(
-              widget.brand.id == 0 ? 'Nueva marca' : widget.brand.description),
+      backgroundColor: Color(0xFFE4D359),
+      appBar: AppBar(
+        title: Text(
+          widget.brand.id == 0 ? 'Nueva marca' : widget.brand.description,
         ),
-        body: Stack(
-          children: [
-            Column(
-              children: <Widget>[
-                SizedBox(
-                  height: 25,
-                ),
-                _showDescription(),
-                SizedBox(
-                  height: 5,
-                ),
-                _showButtons(),
-              ],
-            ),
-            _showLoader
-                ? LoaderComponent(
-                    text: 'Por favor espere...',
-                  )
-                : Container(),
-          ],
-        ));
+      ),
+      body: Stack(
+        children: [
+          Column(
+            children: <Widget>[
+              SizedBox(height: 25),
+              _showDescription(),
+              SizedBox(height: 5),
+              _showButtons(),
+            ],
+          ),
+          _showLoader
+              ? LoaderComponent(text: 'Por favor espere...')
+              : Container(),
+        ],
+      ),
+    );
   }
 
   Widget _showDescription() {
@@ -71,14 +67,14 @@ class _brandScreenState extends State<brandScreen> {
       child: TextField(
         controller: _descriptionController,
         decoration: InputDecoration(
-            fillColor: Colors.white,
-            filled: true,
-            hintText: 'Ingresa una Descripción...',
-            labelText: 'Descripción',
-            errorText: _descriptionShowError ? _descriptionError : null,
-            suffixIcon: Icon(Icons.description),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+          fillColor: Colors.white,
+          filled: true,
+          hintText: 'Ingresa una Descripción...',
+          labelText: 'Descripción',
+          errorText: _descriptionShowError ? _descriptionError : null,
+          suffixIcon: Icon(Icons.description),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         onChanged: (value) {
           _description = value;
         },
@@ -98,26 +94,21 @@ class _brandScreenState extends State<brandScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.save),
-                  SizedBox(
-                    width: 15,
-                  ),
+                  SizedBox(width: 15),
                   Text('Guardar'),
                 ],
               ),
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
+                backgroundColor: MaterialStateProperty.resolveWith<Color>((
+                  Set<MaterialState> states,
+                ) {
                   return Color(0xFF120E43);
                 }),
               ),
               onPressed: () => _save(),
             ),
           ),
-          widget.brand.id == 0
-              ? Container()
-              : SizedBox(
-                  width: 20,
-                ),
+          widget.brand.id == 0 ? Container() : SizedBox(width: 20),
           widget.brand.id == 0
               ? Container()
               : Expanded(
@@ -126,17 +117,16 @@ class _brandScreenState extends State<brandScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.delete),
-                        SizedBox(
-                          width: 15,
-                        ),
+                        SizedBox(width: 15),
                         Text('Borrar'),
                       ],
                     ),
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                        return Color(0xFFB4161B);
-                      }),
+                        (Set<MaterialState> states) {
+                          return Color(0xFFB4161B);
+                        },
+                      ),
                     ),
                     onPressed: () => _confirmDelete(),
                   ),
@@ -181,21 +171,23 @@ class _brandScreenState extends State<brandScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
-    Map<String, dynamic> request = {
-      'description': _description,
-    };
+    Map<String, dynamic> request = {'description': _description};
 
-    Response response =
-        await ApiHelper.post('/api/brands/', request, widget.token);
+    Response response = await ApiHelper.post(
+      '/api/brands/',
+      request,
+      widget.token,
+    );
 
     setState(() {
       _showLoader = false;
@@ -203,12 +195,13 @@ class _brandScreenState extends State<brandScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
     Navigator.pop(context, 'yes');
@@ -231,17 +224,22 @@ class _brandScreenState extends State<brandScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
     Response response = await ApiHelper.put(
-        '/api/brands/', widget.brand.id.toString(), request, widget.token);
+      '/api/brands/',
+      widget.brand.id.toString(),
+      request,
+      widget.token,
+    );
 
     setState(() {
       _showLoader = false;
@@ -249,12 +247,13 @@ class _brandScreenState extends State<brandScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
     Navigator.pop(context, 'yes');
@@ -262,13 +261,14 @@ class _brandScreenState extends State<brandScreen> {
 
   void _confirmDelete() async {
     var response = await showAlertDialog(
-        context: context,
-        title: 'Confirmación',
-        message: '¿Estás seguro de querer borrar el registro?',
-        actions: <AlertDialogAction>[
-          AlertDialogAction(key: 'no', label: 'No'),
-          AlertDialogAction(key: 'yes', label: 'Sí'),
-        ]);
+      context: context,
+      title: 'Confirmación',
+      message: '¿Estás seguro de querer borrar el registro?',
+      actions: <AlertDialogAction>[
+        AlertDialogAction(key: 'no', label: 'No'),
+        AlertDialogAction(key: 'yes', label: 'Sí'),
+      ],
+    );
     if (response == 'yes') {
       _deleteRecord();
     }
@@ -286,17 +286,21 @@ class _brandScreenState extends State<brandScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
     Response response = await ApiHelper.delete(
-        '/api/brands/', widget.brand.id.toString(), widget.token);
+      '/api/brands/',
+      widget.brand.id.toString(),
+      widget.token,
+    );
 
     setState(() {
       _showLoader = false;
@@ -304,12 +308,13 @@ class _brandScreenState extends State<brandScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
     Navigator.pop(context, 'yes');

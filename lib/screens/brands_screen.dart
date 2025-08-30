@@ -1,5 +1,5 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:vehicles_app/components/loader_component.dart';
@@ -42,8 +42,13 @@ class _brandsScreenState extends State<BrandsScreen> {
         actions: <Widget>[
           _isFiltered
               ? IconButton(
-                  onPressed: _removeFilter, icon: Icon(Icons.filter_none))
-              : IconButton(onPressed: _showFilter, icon: Icon(Icons.filter_alt))
+                  onPressed: _removeFilter,
+                  icon: Icon(Icons.filter_none),
+                )
+              : IconButton(
+                  onPressed: _showFilter,
+                  icon: Icon(Icons.filter_alt),
+                ),
         ],
       ),
       body: Center(
@@ -70,12 +75,13 @@ class _brandsScreenState extends State<BrandsScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -87,12 +93,13 @@ class _brandsScreenState extends State<BrandsScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -136,16 +143,11 @@ class _brandsScreenState extends State<BrandsScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          e.description,
-                          style: TextStyle(fontSize: 16),
-                        ),
+                        Text(e.description, style: TextStyle(fontSize: 16)),
                         Icon(Icons.arrow_forward_ios),
                       ],
                     ),
-                    SizedBox(
-                      height: 5,
-                    ),
+                    SizedBox(height: 5),
                   ],
                 ),
               ),
@@ -158,39 +160,44 @@ class _brandsScreenState extends State<BrandsScreen> {
 
   void _showFilter() {
     showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            title: Text('Filtrar Marcas'),
-            content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: Text('Filtrar Marcas'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
               Text('Escriba las primeras letras de la Marca'),
-              SizedBox(
-                height: 10,
-              ),
+              SizedBox(height: 10),
               TextField(
                 autofocus: true,
                 decoration: InputDecoration(
-                    hintText: 'Criterio de búsqueda...',
-                    labelText: 'Buscar',
-                    suffixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10))),
+                  hintText: 'Criterio de búsqueda...',
+                  labelText: 'Buscar',
+                  suffixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
                 onChanged: (value) {
                   _search = value;
                 },
               ),
-            ]),
-            actions: <Widget>[
-              TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text('Cancelar')),
-              TextButton(onPressed: () => _filter(), child: Text('Filtrar')),
             ],
-          );
-        });
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Cancelar'),
+            ),
+            TextButton(onPressed: () => _filter(), child: Text('Filtrar')),
+          ],
+        );
+      },
+    );
   }
 
   void _removeFilter() {
@@ -221,10 +228,14 @@ class _brandsScreenState extends State<BrandsScreen> {
 
   void _goAdd() async {
     String? result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => brandScreen(
-                token: widget.token, brand: Brand(description: '', id: 0))));
+      context,
+      MaterialPageRoute(
+        builder: (context) => brandScreen(
+          token: widget.token,
+          brand: Brand(description: '', id: 0),
+        ),
+      ),
+    );
     if (result == 'yes') {
       _getbrands();
     }
@@ -232,10 +243,11 @@ class _brandsScreenState extends State<BrandsScreen> {
 
   void _goEdit(Brand brand) async {
     String? result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                brandScreen(token: widget.token, brand: brand)));
+      context,
+      MaterialPageRoute(
+        builder: (context) => brandScreen(token: widget.token, brand: brand),
+      ),
+    );
     if (result == 'yes') {
       _getbrands();
     }

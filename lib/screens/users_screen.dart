@@ -1,6 +1,6 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -45,8 +45,13 @@ class _UsersScreenState extends State<UsersScreen> {
         actions: <Widget>[
           _isFiltered
               ? IconButton(
-                  onPressed: _removeFilter, icon: Icon(Icons.filter_none))
-              : IconButton(onPressed: _showFilter, icon: Icon(Icons.filter_alt))
+                  onPressed: _removeFilter,
+                  icon: Icon(Icons.filter_none),
+                )
+              : IconButton(
+                  onPressed: _showFilter,
+                  icon: Icon(Icons.filter_alt),
+                ),
         ],
       ),
       body: Center(
@@ -73,12 +78,13 @@ class _UsersScreenState extends State<UsersScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -90,12 +96,13 @@ class _UsersScreenState extends State<UsersScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -167,34 +174,32 @@ class _UsersScreenState extends State<UsersScreen> {
                                   Row(
                                     children: [
                                       Expanded(
-                                        child: Text(e.fullName,
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            )),
+                                        child: Text(
+                                          e.fullName,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
                                       ),
                                     ],
                                   ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
+                                  SizedBox(height: 5),
                                   Row(
                                     children: [
-                                      Text(e.email,
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                          )),
+                                      Text(
+                                        e.email,
+                                        style: TextStyle(fontSize: 12),
+                                      ),
                                     ],
                                   ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
+                                  SizedBox(height: 5),
                                   Row(
                                     children: [
-                                      Text(e.phoneNumber,
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                          )),
+                                      Text(
+                                        e.phoneNumber,
+                                        style: TextStyle(fontSize: 12),
+                                      ),
                                     ],
                                   ),
                                 ],
@@ -217,40 +222,46 @@ class _UsersScreenState extends State<UsersScreen> {
 
   void _showFilter() {
     showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            title: Text('Filtrar Usuarios'),
-            content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: Text('Filtrar Usuarios'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
               Text(
-                  'Escriba las primeras letras del Nombre o Apellido del Usuario'),
-              SizedBox(
-                height: 10,
+                'Escriba las primeras letras del Nombre o Apellido del Usuario',
               ),
+              SizedBox(height: 10),
               TextField(
                 autofocus: true,
                 decoration: InputDecoration(
-                    hintText: 'Criterio de búsqueda...',
-                    labelText: 'Buscar',
-                    suffixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10))),
+                  hintText: 'Criterio de búsqueda...',
+                  labelText: 'Buscar',
+                  suffixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
                 onChanged: (value) {
                   _search = value;
                 },
               ),
-            ]),
-            actions: <Widget>[
-              TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text('Cancelar')),
-              TextButton(onPressed: () => _filter(), child: Text('Filtrar')),
             ],
-          );
-        });
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Cancelar'),
+            ),
+            TextButton(onPressed: () => _filter(), child: Text('Filtrar')),
+          ],
+        );
+      },
+    );
   }
 
   void _removeFilter() {
@@ -281,28 +292,31 @@ class _UsersScreenState extends State<UsersScreen> {
 
   void _goAdd() async {
     String? result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => UserScreen(
-                token: widget.token,
-                myProfile: false,
-                user: User(
-                  firstName: '',
-                  lastName: '',
-                  documentType: DocumentType(id: 0, description: ''),
-                  document: '',
-                  address: '',
-                  imageId: '',
-                  imageFullPath: '',
-                  userType: 1,
-                  fullName: '',
-                  vehicles: [],
-                  vehiclesCount: 0,
-                  id: '',
-                  userName: '',
-                  email: '',
-                  phoneNumber: '',
-                ))));
+      context,
+      MaterialPageRoute(
+        builder: (context) => UserScreen(
+          token: widget.token,
+          myProfile: false,
+          user: User(
+            firstName: '',
+            lastName: '',
+            documentType: DocumentType(id: 0, description: ''),
+            document: '',
+            address: '',
+            imageId: '',
+            imageFullPath: '',
+            userType: 1,
+            fullName: '',
+            vehicles: [],
+            vehiclesCount: 0,
+            id: '',
+            userName: '',
+            email: '',
+            phoneNumber: '',
+          ),
+        ),
+      ),
+    );
     if (result == 'yes') {
       _getUsers();
     }
@@ -310,10 +324,12 @@ class _UsersScreenState extends State<UsersScreen> {
 
   void _goInfoUser(User user) async {
     String? result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => UserInfoScreen(
-                token: widget.token, user: user, isAdmin: true)));
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            UserInfoScreen(token: widget.token, user: user, isAdmin: true),
+      ),
+    );
     if (result == 'yes') {
       _getUsers();
     }
